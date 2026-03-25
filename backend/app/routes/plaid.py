@@ -29,6 +29,13 @@ async def exchange_public_token(body: ExchangeRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/disconnect")
+async def disconnect():
+    state.store["access_token"] = None
+    state.store["transactions"] = None
+    return {"status": "ok"}
+
+
 @router.get("/transactions")
 async def get_transactions():
     if not state.store["access_token"]:
