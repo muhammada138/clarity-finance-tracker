@@ -14,7 +14,7 @@ A personal finance app that connects to your bank through Plaid and uses an LLM 
 **Frontend:** React + Vite
 **Backend:** FastAPI (Python)
 **Bank data:** Plaid API
-**AI:** Claude (Anthropic) or OpenAI, depending on what you configure
+**AI:** Google Gemini (gemini-2.0-flash)
 
 ## Project layout
 
@@ -31,8 +31,8 @@ backend/    FastAPI server
 4. Start the backend: `cd backend && python main.py`
 5. Start the frontend: `cd frontend && npm run dev`
 
-You'll need a Plaid account (sandbox is free) and either an Anthropic or OpenAI API key.
+You'll need a Plaid account (sandbox is free) and a Google Gemini API key.
 
 ## Status
 
-Still a work in progress. Core scaffolding is in place, wiring everything up next.
+Core features are working. Plaid sandbox connection, transaction categorization, spending chart, and chat are all live.
