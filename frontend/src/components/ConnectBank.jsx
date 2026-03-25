@@ -25,13 +25,26 @@ function ConnectBank({ onConnected }) {
   });
 
   return (
-    <div className="connect-bank">
-      <h2>Connect your bank</h2>
-      <p>Uses Plaid sandbox, no real account needed.</p>
-      {error && <p className="error">{error}</p>}
-      <button onClick={() => open()} disabled={!ready}>
-        Connect Bank Account
-      </button>
+    <div className="connect-page">
+      <div className="connect-card">
+        <div className="card-logo">
+          <div className="logo-icon">F</div>
+          Fintrack
+        </div>
+        <h1>
+          Your finances,{" "}
+          <span className="gradient-text">simplified</span>
+        </h1>
+        <p>
+          Connect your bank account to get AI-powered insights on where your
+          money is going.
+        </p>
+        {error && <div className="error-msg">{error}</div>}
+        <button className="btn-primary" onClick={() => open()} disabled={!ready}>
+          {ready ? "Connect Bank Account" : "Loading..."}
+        </button>
+        <p className="fine-print">Uses Plaid sandbox. No real credentials needed.</p>
+      </div>
     </div>
   );
 }
