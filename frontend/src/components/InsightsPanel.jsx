@@ -27,32 +27,48 @@ function InsightsPanel({ insights, loading }) {
 
   return (
     <div className="insights-panel">
-      <h2>AI Insights</h2>
-      {loading && <p className="muted">Analyzing your spending...</p>}
-      {insights && <p className="insights-text">{insights}</p>}
-
-      <h3>Ask about your spending</h3>
-      <div className="chat-messages">
-        {messages.map((m, i) => (
-          <div key={i} className={`message ${m.role}`}>
-            <span>{m.text}</span>
-          </div>
-        ))}
-        {chatLoading && <div className="message ai muted">Thinking...</div>}
+      <div className="card-header" style={{ marginBottom: 0 }}>
+        <span className="card-title">AI Insights</span>
       </div>
 
-      <form onSubmit={handleSend} className="chat-form">
-        <input
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="How much did I spend on food last week?"
-          disabled={chatLoading}
-        />
-        <button type="submit" disabled={chatLoading || !question.trim()}>
-          Send
-        </button>
-      </form>
+      {loading ? (
+        <div className="analyzing">
+          Analyzing your spending
+          <div className="dot-pulse">
+            <span /><span /><span />
+          </div>
+        </div>
+      ) : (
+        insights && <p className="insights-text">{insights}</p>
+      )}
+
+      <div className="chat-section">
+        <span className="section-label">Ask anything</span>
+        <div className="chat-messages">
+          {messages.map((m, i) => (
+            <div key={i} className={`message ${m.role}`}>
+              {m.text}
+            </div>
+          ))}
+          {chatLoading && (
+            <div className="message ai thinking">Thinking...</div>
+          )}
+        </div>
+
+        <form onSubmit={handleSend} className="chat-form">
+          <input
+            className="chat-input"
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="How much did I spend on food?"
+            disabled={chatLoading}
+          />
+          <button className="btn-send" type="submit" disabled={chatLoading || !question.trim()}>
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
