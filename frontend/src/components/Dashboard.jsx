@@ -26,7 +26,7 @@ function Dashboard({ transactions }) {
   const totals = {};
   for (const t of transactions) {
     const cat = t.category || "other";
-    totals[cat] = (totals[cat] || 0) + t.amount;
+    totals[cat] = (totals[cat] || 0) + Math.abs(t.amount);
   }
 
   const chartData = Object.entries(totals)
@@ -39,8 +39,8 @@ function Dashboard({ transactions }) {
         <span className="card-title">Spending by Category</span>
         <span className="card-sub">last 30 days</span>
       </div>
-      <ResponsiveContainer width="100%" height={240}>
-        <BarChart data={chartData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={chartData} margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
           <XAxis
             dataKey="category"
             tick={{ fontSize: 11, fill: "#7d8590", fontFamily: "Inter, sans-serif" }}
