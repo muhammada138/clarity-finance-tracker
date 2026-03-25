@@ -1,22 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePlaidLink } from "react-plaid-link";
 import { getLinkToken, exchangePublicToken } from "../services/api";
-
-function ClarityLogo() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="logo-grad-c" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#7c6af7" />
-          <stop offset="1" stopColor="#c4b5fd" />
-        </linearGradient>
-      </defs>
-      <rect width="28" height="28" rx="7" fill="url(#logo-grad-c)" />
-      <path d="M14 5.5L6.5 13h15L14 5.5z" fill="white" />
-      <path d="M6.5 13L14 22.5 21.5 13H6.5z" fill="white" fillOpacity="0.5" />
-    </svg>
-  );
-}
+import ClarityLogo from "./ClarityLogo";
 
 const features = [
   {
@@ -32,7 +17,7 @@ const features = [
   },
   {
     title: "AI-powered categorization",
-    desc: "Gemini reads every transaction and groups your spending automatically.",
+    desc: "Every transaction is read and grouped into categories automatically.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M9 2v2M9 14v2M2 9h2M14 9h2M4.22 4.22l1.42 1.42M12.36 12.36l1.42 1.42M4.22 13.78l1.42-1.42M12.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

@@ -14,8 +14,12 @@ class ChatRequest(BaseModel):
 def get_categorized_transactions():
     if not state.store["access_token"]:
         raise HTTPException(status_code=400, detail="no bank connected yet")
+    if state.store["transactions"] is not None:
+        return state.store["transactions"]
     raw = plaid_svc.fetch_transactions(state.store["access_token"])
-    return ai_insights.categorize_transactions(raw)
+    transactions = ai_insights.categorize_transactions(raw)
+    state.store["transactions"] = transactions
+    return transactions
 
 
 @router.get("/")
