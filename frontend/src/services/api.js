@@ -32,6 +32,11 @@ export async function getInsights() {
   return data;
 }
 
+export async function disconnect() {
+  const res = await fetch(`${BASE}/plaid/disconnect`, { method: "POST" });
+  if (!res.ok) throw new Error("failed to disconnect");
+}
+
 export async function askQuestion(question) {
   const res = await fetch(`${BASE}/insights/chat`, {
     method: "POST",
