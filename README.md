@@ -14,7 +14,7 @@ A personal finance app that connects to your bank through Plaid and uses an LLM 
 **Frontend:** React + Vite
 **Backend:** FastAPI (Python)
 **Bank data:** Plaid API
-**AI:** Google Gemini (gemini-2.0-flash)
+**AI:** Groq (llama-3.3-70b-versatile)
 
 ## Project layout
 
@@ -31,7 +31,7 @@ backend/    FastAPI server
 4. Start the backend: `cd backend && python main.py`
 5. Start the frontend: `cd frontend && npm run dev`
 
-You'll need a Plaid account (sandbox is free) and a Google Gemini API key.
+You'll need a Plaid account (sandbox is free) and a Groq API key.
 
 ## Status
 
