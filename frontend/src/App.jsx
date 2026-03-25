@@ -35,7 +35,12 @@ function App() {
   }
 
   const total = useMemo(
-    () => transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    () => transactions.filter((t) => t.category !== "income").reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    [transactions]
+  );
+
+  const totalIncome = useMemo(
+    () => transactions.filter((t) => t.category === "income").reduce((sum, t) => sum + Math.abs(t.amount), 0),
     [transactions]
   );
 
@@ -43,6 +48,7 @@ function App() {
     const totals = {};
     for (const t of transactions) {
       const c = t.category || "other";
+      if (c === "income") continue;
       totals[c] = (totals[c] || 0) + Math.abs(t.amount);
     }
     return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
@@ -57,7 +63,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <div className="logo">
+        <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} style={{ cursor: "pointer" }}>
           <ClarityLogo />
           Clarity
         </div>
@@ -86,9 +92,9 @@ function App() {
               <span className="stat-sub">last 30 days</span>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Transactions</span>
-              <span className="stat-value">{transactions.length}</span>
-              <span className="stat-sub">pulled from Plaid</span>
+              <span className="stat-label">Income</span>
+              <span className="stat-value stat-value-income">${totalIncome.toFixed(2)}</span>
+              <span className="stat-sub">deposits & transfers</span>
             </div>
             <div className="stat-card">
               <span className="stat-label">Top Category</span>

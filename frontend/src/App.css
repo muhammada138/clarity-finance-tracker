@@ -343,6 +343,10 @@ main {
   margin-top: 5px;
 }
 
+.stat-value-income {
+  color: #3fb950;
+}
+
 /* ---- chart card ---- */
 
 .dashboard {
@@ -410,6 +414,26 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid #21262d;
+}
+
+.tx-th-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.tx-th-sortable:hover {
+  color: #7d8590;
+}
+
+.sort-arrow {
+  font-size: 0.65rem;
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
+.tx-amount-income {
+  color: #3fb950;
 }
 
 .tx-table th:last-child { text-align: right; }

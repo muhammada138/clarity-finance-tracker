@@ -7,5 +7,6 @@ export const categoryColors = {
   utilities: "#14b8a6",
   entertainment: "#f59e0b",
   health: "#22c55e",
+  income: "#3fb950",
   other: "#6b7280",
 };

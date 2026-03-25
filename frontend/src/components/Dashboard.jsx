@@ -26,6 +26,7 @@ function Dashboard({ transactions }) {
   const totals = {};
   for (const t of transactions) {
     const cat = t.category || "other";
+    if (cat === "income") continue; // income shown separately in stats
     totals[cat] = (totals[cat] || 0) + Math.abs(t.amount);
   }
 

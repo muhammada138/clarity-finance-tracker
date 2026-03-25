@@ -1,7 +1,8 @@
 # AI-Powered Personal Finance Tracker
 
 A personal finance app that connects to your bank through Plaid and uses an LLM to categorize transactions and surface spending insights.
-
+## 🌐 Live Demo
+[https://clarity-finance-tracker.netlify.app/](https://clarity-finance-tracker.netlify.app/)
 ## What it does
 
 - Links your bank account using Plaid Link
