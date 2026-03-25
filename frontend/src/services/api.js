@@ -1,4 +1,6 @@
-const BASE = "/api";
+// locally the Vite proxy handles /api → localhost:8000
+// in production VITE_API_URL is set to the Render backend URL
+const BASE = import.meta.env.VITE_API_URL || "/api";
 
 export async function getLinkToken() {
   const res = await fetch(`${BASE}/plaid/link-token`, { method: "POST" });
