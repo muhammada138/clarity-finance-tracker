@@ -1,4 +1,6 @@
-const BASE = "/api";
+// locally the Vite proxy handles /api → localhost:8000
+// in production VITE_API_URL is set to the Render backend URL
+const BASE = import.meta.env.VITE_API_URL || "/api";
 
 export async function getLinkToken() {
   const res = await fetch(`${BASE}/plaid/link-token`, { method: "POST" });
@@ -30,6 +32,11 @@ export async function getInsights() {
   const data = await res.json();
   if (!res.ok) throw new Error(data.detail || "failed to fetch insights");
   return data;
+}
+
+export async function disconnect() {
+  const res = await fetch(`${BASE}/plaid/disconnect`, { method: "POST" });
+  if (!res.ok) throw new Error("failed to disconnect");
 }
 
 export async function askQuestion(question) {

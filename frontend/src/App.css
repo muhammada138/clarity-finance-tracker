@@ -42,6 +42,35 @@ header {
   color: #e6edf3;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid #30363d;
+  color: #7d8590;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: #7c6af7;
+  color: #e6edf3;
+}
+
+.btn-ghost-danger:hover {
+  border-color: #f85149;
+  color: #f85149;
+}
+
 .badge {
   display: flex;
   align-items: center;
