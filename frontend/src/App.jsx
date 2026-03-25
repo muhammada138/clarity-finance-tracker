@@ -4,7 +4,7 @@ import TransactionList from "./components/TransactionList";
 import Dashboard from "./components/Dashboard";
 import InsightsPanel from "./components/InsightsPanel";
 import ClarityLogo from "./components/ClarityLogo";
-import { getInsights } from "./services/api";
+import { getInsights, disconnect } from "./services/api";
 import "./App.css";
 
 function App() {
@@ -12,6 +12,13 @@ function App() {
   const [transactions, setTransactions] = useState([]);
   const [insights, setInsights] = useState("");
   const [insightsLoading, setInsightsLoading] = useState(false);
+
+  async function handleDisconnect() {
+    await disconnect();
+    setConnected(false);
+    setTransactions([]);
+    setInsights("");
+  }
 
   async function handleConnected() {
     setConnected(true);
@@ -28,7 +35,7 @@ function App() {
   }
 
   const total = useMemo(
-    () => transactions.reduce((sum, t) => sum + t.amount, 0),
+    () => transactions.reduce((sum, t) => sum + Math.abs(t.amount), 0),
     [transactions]
   );
 
@@ -36,7 +43,7 @@ function App() {
     const totals = {};
     for (const t of transactions) {
       const c = t.category || "other";
-      totals[c] = (totals[c] || 0) + t.amount;
+      totals[c] = (totals[c] || 0) + Math.abs(t.amount);
     }
     return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
   }, [transactions]);
@@ -54,7 +61,13 @@ function App() {
           <ClarityLogo />
           Clarity
         </div>
-        {connected && <span className="badge">Connected</span>}
+        {connected && (
+          <div className="header-actions">
+            <span className="badge">Connected</span>
+            <button className="btn-ghost" onClick={handleDisconnect}>Switch account</button>
+            <button className="btn-ghost btn-ghost-danger" onClick={handleDisconnect}>Log out</button>
+          </div>
+        )}
       </header>
 
       {!connected ? (
