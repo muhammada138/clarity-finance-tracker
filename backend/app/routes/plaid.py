@@ -1,21 +1,40 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from app.services import plaid_client as plaid_svc
+from app import state
 
 router = APIRouter()
 
 
-# creates and returns a link token for the frontend to start Plaid Link
+class ExchangeRequest(BaseModel):
+    public_token: str
+
+
 @router.post("/link-token")
 async def create_link_token():
-    pass
+    try:
+        token = plaid_svc.create_link_token("demo-user")
+        return {"link_token": token}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# swaps the public token for an access token and saves it
 @router.post("/exchange-token")
-async def exchange_public_token(public_token: str):
-    pass
+async def exchange_public_token(body: ExchangeRequest):
+    try:
+        access_token = plaid_svc.exchange_public_token(body.public_token)
+        state.store["access_token"] = access_token
+        return {"status": "ok"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# pulls recent transactions using the stored access token
 @router.get("/transactions")
 async def get_transactions():
-    pass
+    if not state.store["access_token"]:
+        raise HTTPException(status_code=400, detail="no bank connected yet")
+    try:
+        transactions = plaid_svc.fetch_transactions(state.store["access_token"])
+        return {"transactions": transactions}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
