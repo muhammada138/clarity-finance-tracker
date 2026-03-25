@@ -20,10 +20,19 @@ const categoryColors = {
   other: "#6b7280",
 };
 
+function CustomTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="custom-tooltip">
+      <p className="label">{payload[0].payload.category}</p>
+      <p className="value">${payload[0].value.toFixed(2)}</p>
+    </div>
+  );
+}
+
 function Dashboard({ transactions }) {
   if (!transactions.length) return null;
 
-  // tally spending by category
   const totals = {};
   for (const t of transactions) {
     const cat = t.category || "other";
@@ -36,17 +45,31 @@ function Dashboard({ transactions }) {
 
   return (
     <div className="dashboard">
-      <h2>Spending by Category</h2>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-          <XAxis dataKey="category" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip formatter={(val) => `$${val}`} />
-          <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+      <div className="card-header">
+        <span className="card-title">Spending by Category</span>
+        <span className="card-sub">last 30 days</span>
+      </div>
+      <ResponsiveContainer width="100%" height={240}>
+        <BarChart data={chartData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+          <XAxis
+            dataKey="category"
+            tick={{ fontSize: 11, fill: "#7d8590", fontFamily: "Inter, sans-serif" }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: "#7d8590", fontFamily: "Inter, sans-serif" }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(v) => `$${v}`}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+          <Bar dataKey="amount" radius={[5, 5, 0, 0]} maxBarSize={48}>
             {chartData.map((entry) => (
               <Cell
                 key={entry.category}
                 fill={categoryColors[entry.category] || categoryColors.other}
+                opacity={0.85}
               />
             ))}
           </Bar>

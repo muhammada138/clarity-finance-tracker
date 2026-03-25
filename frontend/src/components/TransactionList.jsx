@@ -15,21 +15,24 @@ function TransactionList({ transactions }) {
 
   return (
     <div className="transaction-list">
-      <h2>Recent Transactions</h2>
-      <table>
+      <div className="card-header">
+        <span className="card-title">Recent Transactions</span>
+        <span className="card-sub">{transactions.length} total</span>
+      </div>
+      <table className="tx-table">
         <thead>
           <tr>
-            <th>Date</th>
             <th>Name</th>
+            <th>Date</th>
             <th>Category</th>
-            <th>Amount</th>
+            <th style={{ textAlign: "right" }}>Amount</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((t) => (
             <tr key={t.id}>
-              <td>{t.date}</td>
-              <td>{t.merchant_name || t.name}</td>
+              <td className="tx-name">{t.merchant_name || t.name}</td>
+              <td className="tx-date">{t.date}</td>
               <td>
                 <span
                   className="tag"
@@ -38,7 +41,7 @@ function TransactionList({ transactions }) {
                   {t.category || "other"}
                 </span>
               </td>
-              <td className="amount">${t.amount.toFixed(2)}</td>
+              <td className="tx-amount">-${t.amount.toFixed(2)}</td>
             </tr>
           ))}
         </tbody>

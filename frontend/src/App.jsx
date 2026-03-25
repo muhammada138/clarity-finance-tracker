@@ -26,10 +26,24 @@ function App() {
     }
   }
 
+  // quick stats for the top row
+  const total = transactions.reduce((sum, t) => sum + t.amount, 0);
+  const topCat = (() => {
+    const totals = {};
+    for (const t of transactions) {
+      const c = t.category || "other";
+      totals[c] = (totals[c] || 0) + t.amount;
+    }
+    return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
+  })();
+
   return (
     <div className="app">
       <header>
-        <h1>Finance Tracker</h1>
+        <div className="logo">
+          <div className="logo-icon">F</div>
+          Fintrack
+        </div>
         {connected && <span className="badge">Connected</span>}
       </header>
 
@@ -37,7 +51,26 @@ function App() {
         <ConnectBank onConnected={handleConnected} />
       ) : (
         <main>
+          <div className="stats-row">
+            <div className="stat-card">
+              <span className="stat-label">Total Spent</span>
+              <span className="stat-value">${total.toFixed(2)}</span>
+              <span className="stat-sub">last 30 days</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Transactions</span>
+              <span className="stat-value">{transactions.length}</span>
+              <span className="stat-sub">pulled from Plaid</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Top Category</span>
+              <span className="stat-value" style={{ textTransform: "capitalize" }}>{topCat}</span>
+              <span className="stat-sub">highest spending</span>
+            </div>
+          </div>
+
           <Dashboard transactions={transactions} />
+
           <div className="lower">
             <TransactionList transactions={transactions} />
             <InsightsPanel insights={insights} loading={insightsLoading} />
