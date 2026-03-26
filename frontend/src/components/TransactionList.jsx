@@ -12,8 +12,9 @@ function sortTransactions(txs, key, dir, catCounts) {
   return [...txs].sort((a, b) => {
     let av, bv;
     if (key === "amount") {
-      av = a.amount;
-      bv = b.amount;
+      // sort by the displayed value: income is positive, expenses are negative
+      av = a.category === "income" ? Math.abs(a.amount) : -Math.abs(a.amount);
+      bv = b.category === "income" ? Math.abs(b.amount) : -Math.abs(b.amount);
     } else if (key === "name") {
       av = (a.merchant_name || a.name).toLowerCase();
       bv = (b.merchant_name || b.name).toLowerCase();
