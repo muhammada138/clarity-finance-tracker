@@ -26,7 +26,8 @@ def categorize_transactions(transactions: list) -> list:
 
     text = ask(
         "Categorize each transaction into one of: food, transport, shopping, "
-        "subscriptions, rent, utilities, entertainment, health, other.\n\n"
+        "subscriptions, rent, utilities, entertainment, health, income, other.\n"
+        "Use 'income' for any deposits, paychecks, transfers in, or refunds.\n\n"
         "Return a JSON array only, same order as input, each object having "
         '"name", "amount", "category".\n\n'
         f"Transactions:\n{json.dumps(items, indent=2)}"
