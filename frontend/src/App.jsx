@@ -99,15 +99,15 @@ function App() {
         )}
       </header>
 
-      {!connected ? (
-        <ConnectBank onConnected={handleConnected} />
-      ) : initializing ? (
+      {initializing ? (
         <div className="init-screen">
           <p className="init-label">Analyzing your transactions</p>
           <div className="dot-pulse">
             <span /><span /><span />
           </div>
         </div>
+      ) : !connected ? (
+        <ConnectBank onConnected={handleConnected} />
       ) : loadError ? (
         <div className="init-screen">
           <p className="init-error">{loadError}</p>
