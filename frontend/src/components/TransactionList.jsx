@@ -8,7 +8,7 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
-function sortTransactions(txs, key, dir) {
+function sortTransactions(txs, key, dir, catCounts) {
   return [...txs].sort((a, b) => {
     let av, bv;
     if (key === "amount") {
@@ -18,8 +18,9 @@ function sortTransactions(txs, key, dir) {
       av = (a.merchant_name || a.name).toLowerCase();
       bv = (b.merchant_name || b.name).toLowerCase();
     } else if (key === "category") {
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
+      // sort by count of transactions in that category
+      av = catCounts[a.category || "other"] || 0;
+      bv = catCounts[b.category || "other"] || 0;
     } else {
       av = a.date;
       bv = b.date;
@@ -41,11 +42,17 @@ function TransactionList({ transactions }) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     } else {
       setSortKey(key);
-      setSortDir(key === "amount" ? "desc" : "asc");
+      setSortDir(key === "amount" || key === "category" ? "desc" : "asc");
     }
   }
 
-  const sorted = sortTransactions(transactions, sortKey, sortDir);
+  const catCounts = {};
+  for (const t of transactions) {
+    const c = t.category || "other";
+    catCounts[c] = (catCounts[c] || 0) + 1;
+  }
+
+  const sorted = sortTransactions(transactions, sortKey, sortDir, catCounts);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
 
   return (
