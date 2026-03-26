@@ -1,76 +1,107 @@
 # Clarity
 
-A personal finance tracker that connects to your bank and uses AI to make sense of your spending. Built with FastAPI, React, Plaid, and Groq.
+AI-powered personal finance tracker. Connect your bank, get an instant breakdown of your spending, and chat with an LLM that knows your actual transactions.
 
-![screenshot](https://i.imgur.com/placeholder.png)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![Plaid](https://img.shields.io/badge/Plaid-Sandbox-00C853?style=flat)
+![Groq](https://img.shields.io/badge/Groq_AI-LLaMA_3.3_70B-orange?style=flat)
 
-## Features
+---
 
-- Connect your bank account through Plaid Link
-- Automatic AI categorization of every transaction (food, transport, shopping, income, etc.)
-- Spending breakdown chart by category
-- Stat cards for total spent, income, and top spending category
-- Sortable transaction table
-- Chat with your finances using a built-in AI assistant
-- Switch or disconnect accounts at any time
+## What it does
 
-## Tech Stack
+Most finance apps show you a list of transactions and leave the thinking to you. Clarity connects to your bank through Plaid, runs every transaction through an LLM for categorization, and lets you ask questions about your spending in plain English.
+
+**Key features:**
+
+- **Bank connection** — links your account via Plaid Link, no manual entry
+- **AI categorization** — every transaction is automatically sorted into food, transport, shopping, income, and more by LLaMA 3.3 70B
+- **Spending chart** — bar chart breakdown by category, excluding income
+- **Sortable transactions** — click any column header to sort by name, date, category, or amount
+- **Stat cards** — total spent, total income, and top spending category at a glance
+- **AI chat** — ask anything about your money and get answers grounded in your actual data
+- **Session persistence** — stays logged in across page refreshes
+
+---
+
+## Tech stack
 
 | Layer | Tech |
 |---|---|
 | Frontend | React 18, Vite, Recharts |
-| Backend | FastAPI, Python |
+| Backend | FastAPI, Uvicorn, Python |
 | Bank data | Plaid API (sandbox) |
-| AI | Groq, llama-3.3-70b-versatile |
+| AI | Groq API, LLaMA 3.3 70B |
 
-## Getting Started
+---
 
-### Prerequisites
+## Getting started
 
-- Node.js 18+
-- Python 3.10+
-- A [Plaid](https://plaid.com) account (sandbox is free)
-- A [Groq](https://console.groq.com) API key (free)
+You'll need a [Plaid](https://plaid.com) account (sandbox is free) and a [Groq](https://console.groq.com) API key (also free).
 
-### Setup
+### Backend
 
 ```bash
-# Clone the repo
-git clone https://github.com/muhammada138/clarity-finance-tracker
-cd clarity-finance-tracker
-
-# Backend
 cd backend
 pip install -r requirements.txt
-
-# Frontend
-cd ../frontend
-npm install
+cp .env.example .env   # fill in your keys
+python main.py
 ```
 
-Create a `.env` file in the `backend/` folder:
-
-```
-PLAID_CLIENT_ID=your_client_id
-PLAID_SECRET=your_sandbox_secret
-PLAID_ENV=sandbox
-GROQ_API_KEY=your_groq_key
-```
-
-### Run
+### Frontend
 
 ```bash
-# Terminal 1 - backend
-cd backend && python main.py
-
-# Terminal 2 - frontend
-cd frontend && npm run dev
+cd frontend
+npm install
+npm run dev
 ```
 
 Open `http://localhost:5173` and connect using Plaid sandbox credentials.
 
+---
+
+## Environment variables
+
+```env
+PLAID_CLIENT_ID=your_client_id
+PLAID_SECRET=your_sandbox_secret
+PLAID_ENV=sandbox
+GROQ_API_KEY=your_groq_key
+FRONTEND_URL=http://localhost:5173   # set to your deployed frontend URL in production
+```
+
+---
+
+## API endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/plaid/link-token` | Create a Plaid Link token to initiate bank connection |
+| `POST` | `/plaid/exchange-token` | Exchange public token for access token after Plaid Link |
+| `GET` | `/plaid/transactions` | Fetch raw transactions from Plaid |
+| `POST` | `/plaid/disconnect` | Clear the stored access token and session |
+| `GET` | `/insights` | Categorize transactions with AI and generate spending insights |
+| `POST` | `/insights/chat` | Ask a question about your spending |
+
+---
+
+## How the AI works
+
+The `/insights` endpoint:
+
+1. Fetches your last 30 days of transactions from Plaid
+2. Sends them to LLaMA 3.3 70B with a categorization prompt
+3. Each transaction gets assigned a category (food, transport, income, etc.)
+4. A second LLM call generates 3-4 spending insights based on the category breakdown
+5. Both the categorized transactions and insights are returned together and cached
+
+The chat endpoint reuses the cached transactions so every follow-up question is fast. The AI has access to your full transaction history including dates, merchants, and amounts.
+
+---
+
 ## Deployment
 
-Backend deployed on [Render](https://render.com), frontend on [Vercel](https://vercel.com).
+Backend on [Render](https://render.com), frontend on [Vercel](https://vercel.com).
 
-Set `VITE_API_URL` on Vercel to your Render backend URL, and `FRONTEND_URL` on Render to your Vercel app URL.
+Set `VITE_API_URL` on Vercel to your Render backend URL. Set `FRONTEND_URL` on Render to your Vercel app URL so CORS works.
