@@ -78,7 +78,9 @@ def chat_about_spending(transactions: list, question: str) -> str:
 
     return ask(
         "You have access to the user's transaction data. Answer their question "
-        "concisely and helpfully. Use dollar amounts where relevant.\n\n"
+        "in plain conversational text — no markdown, no asterisks, no bullet headers, no numbered lists. "
+        "Be brief and direct, 2-4 sentences max unless a longer answer truly needs more. "
+        "Use dollar amounts where relevant.\n\n"
         f"Transactions:\n{tx_text}\n\nQuestion: {question}",
         max_tokens=512,
     )
