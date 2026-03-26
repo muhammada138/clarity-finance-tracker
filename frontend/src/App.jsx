@@ -12,26 +12,36 @@ function App() {
   const [transactions, setTransactions] = useState([]);
   const [insights, setInsights] = useState("");
   const [insightsLoading, setInsightsLoading] = useState(false);
+  const [loadError, setLoadError] = useState(null);
+  const [initializing, setInitializing] = useState(false);
 
   async function handleDisconnect() {
     await disconnect();
     setConnected(false);
     setTransactions([]);
     setInsights("");
+    setLoadError(null);
   }
 
-  async function handleConnected() {
-    setConnected(true);
+  async function loadData() {
+    setLoadError(null);
     setInsightsLoading(true);
     try {
       const data = await getInsights();
       setTransactions(data.transactions || []);
       setInsights(data.insights || "");
     } catch (e) {
-      console.error("failed to load insights", e);
+      setLoadError(e.message || "Something went wrong loading your data.");
     } finally {
       setInsightsLoading(false);
+      setInitializing(false);
     }
+  }
+
+  async function handleConnected() {
+    setConnected(true);
+    setInitializing(true);
+    loadData();
   }
 
   const total = useMemo(
@@ -63,7 +73,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} style={{ cursor: "pointer" }}>
+        <div className="logo" onClick={connected ? handleDisconnect : undefined} style={connected ? { cursor: "pointer" } : undefined}>
           <ClarityLogo />
           Clarity
         </div>
@@ -78,6 +88,18 @@ function App() {
 
       {!connected ? (
         <ConnectBank onConnected={handleConnected} />
+      ) : initializing ? (
+        <div className="init-screen">
+          <p className="init-label">Analyzing your transactions</p>
+          <div className="dot-pulse">
+            <span /><span /><span />
+          </div>
+        </div>
+      ) : loadError ? (
+        <div className="init-screen">
+          <p className="init-error">{loadError}</p>
+          <button className="btn-primary btn-retry" onClick={loadData}>Try again</button>
+        </div>
       ) : (
         <main>
           <div className="welcome">
