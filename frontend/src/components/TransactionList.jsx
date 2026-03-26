@@ -87,7 +87,7 @@ function TransactionList({ transactions }) {
                     {t.category || "other"}
                   </span>
                 </td>
-                <td className={isIncome ? "tx-amount tx-amount-income" : "tx-amount"}>
+                <td className="tx-amount" style={isIncome ? { color: "#3fb950" } : undefined}>
                   {isIncome ? "+" : "-"}${Math.abs(t.amount).toFixed(2)}
                 </td>
               </tr>
