@@ -1,4 +1,5 @@
 import os
+import time
 import plaid
 from plaid.api import plaid_api
 from plaid.model.products import Products
@@ -57,7 +58,18 @@ def fetch_transactions(access_token: str, days: int = 30):
         start_date=start_date,
         end_date=end_date,
     )
-    response = client.transactions_get(request)
+    # Plaid sandbox sometimes needs a moment before transactions are ready
+    for attempt in range(4):
+        try:
+            response = client.transactions_get(request)
+            break
+        except plaid.ApiException as e:
+            if "PRODUCT_NOT_READY" in str(e) and attempt < 3:
+                time.sleep(3)
+                continue
+            raise
+    else:
+        response = client.transactions_get(request)
 
     result = []
     for t in response["transactions"]:

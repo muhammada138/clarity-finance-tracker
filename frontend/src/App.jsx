@@ -106,6 +106,12 @@ function App() {
             <span /><span /><span />
           </div>
         </div>
+      ) : loadError && !connected ? (
+        <div className="init-screen">
+          <p className="init-error">{loadError}</p>
+          <button className="btn-primary btn-retry" onClick={loadData}>Try again</button>
+          <button className="btn-ghost btn-retry" onClick={() => { setLoadError(null); localStorage.removeItem("connected"); }}>Connect different account</button>
+        </div>
       ) : !connected ? (
         <ConnectBank onConnected={handleConnected} />
       ) : loadError ? (
