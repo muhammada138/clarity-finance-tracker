@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ConnectBank from "./components/ConnectBank";
 import TransactionList from "./components/TransactionList";
 import Dashboard from "./components/Dashboard";
@@ -13,10 +13,11 @@ function App() {
   const [insights, setInsights] = useState("");
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
-  const [initializing, setInitializing] = useState(false);
+  const [initializing, setInitializing] = useState(() => localStorage.getItem("connected") === "true");
 
   async function handleDisconnect() {
     await disconnect();
+    localStorage.removeItem("connected");
     setConnected(false);
     setTransactions([]);
     setInsights("");
@@ -28,9 +29,15 @@ function App() {
     setInsightsLoading(true);
     try {
       const data = await getInsights();
+      setConnected(true);
       setTransactions(data.transactions || []);
       setInsights(data.insights || "");
+      localStorage.setItem("connected", "true");
     } catch (e) {
+      // if backend lost the token (e.g. restart), clear the flag
+      if (e.message?.includes("no bank connected")) {
+        localStorage.removeItem("connected");
+      }
       setLoadError(e.message || "Something went wrong loading your data.");
     } finally {
       setInsightsLoading(false);
@@ -38,8 +45,14 @@ function App() {
     }
   }
 
+  // on first mount, resume session if backend still has the token
+  useEffect(() => {
+    if (localStorage.getItem("connected") === "true") {
+      loadData();
+    }
+  }, []);
+
   async function handleConnected() {
-    setConnected(true);
     setInitializing(true);
     loadData();
   }
