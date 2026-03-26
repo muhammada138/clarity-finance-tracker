@@ -12,8 +12,8 @@ function sortTransactions(txs, key, dir) {
   return [...txs].sort((a, b) => {
     let av, bv;
     if (key === "amount") {
-      av = Math.abs(a.amount);
-      bv = Math.abs(b.amount);
+      av = a.amount;
+      bv = b.amount;
     } else if (key === "name") {
       av = (a.merchant_name || a.name).toLowerCase();
       bv = (b.merchant_name || b.name).toLowerCase();
