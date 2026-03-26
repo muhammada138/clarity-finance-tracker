@@ -101,6 +101,36 @@ main {
   flex: 1;
 }
 
+/* ---- init / loading screen ---- */
+
+.init-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 80px 32px;
+}
+
+.init-label {
+  font-size: 0.95rem;
+  color: #7d8590;
+  font-weight: 500;
+}
+
+.init-error {
+  font-size: 0.9rem;
+  color: #f85149;
+  text-align: center;
+  max-width: 400px;
+}
+
+.btn-retry {
+  width: auto;
+  padding: 10px 28px;
+}
+
 /* ---- connect page ---- */
 
 .connect-page {
