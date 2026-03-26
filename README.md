@@ -102,6 +102,6 @@ The chat endpoint reuses the cached transactions so every follow-up question is 
 
 ## Deployment
 
-Backend on [Render](https://render.com), frontend on [Vercel](https://vercel.com).
+Backend on [Render](https://render.com), frontend on [Netlify](https://netlify.com).
 
-Set `VITE_API_URL` on Vercel to your Render backend URL. Set `FRONTEND_URL` on Render to your Vercel app URL so CORS works.
+Set `VITE_API_URL` on Netlify to your Render backend URL. Set `FRONTEND_URL` on Render to your Netlify app URL so CORS works.
