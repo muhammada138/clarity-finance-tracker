@@ -26,13 +26,17 @@ function Dashboard({ transactions }) {
   const totals = {};
   for (const t of transactions) {
     const cat = t.category || "other";
-    if (cat === "income") continue; // income shown separately in stats
     totals[cat] = (totals[cat] || 0) + Math.abs(t.amount);
   }
 
   const chartData = Object.entries(totals)
     .map(([category, amount]) => ({ category, amount: parseFloat(amount.toFixed(2)) }))
-    .sort((a, b) => b.amount - a.amount);
+    .sort((a, b) => {
+      // income always last
+      if (a.category === "income") return 1;
+      if (b.category === "income") return -1;
+      return b.amount - a.amount;
+    });
 
   return (
     <div className="dashboard">
