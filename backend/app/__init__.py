@@ -5,7 +5,7 @@ from app.routes import plaid, insights
 
 
 def create_app():
-    app = FastAPI(title="Finance Tracker API")
+    app = FastAPI(title="Finance Tracker API", redirect_slashes=False)
 
     origins = [
         "http://localhost:5173",
