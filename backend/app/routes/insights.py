@@ -22,6 +22,7 @@ def get_categorized_transactions():
     return transactions
 
 
+@router.get("")
 @router.get("/")
 async def get_insights():
     try:
