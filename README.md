@@ -102,6 +102,6 @@ The chat endpoint reuses the cached transactions so every follow-up question is 
 
 ## Deployment
 
-Backend on [Render](https://render.com), frontend on [Netlify](https://netlify.com).
+Backend on Oracle Cloud (Ubuntu VM, systemd service), frontend on [Vercel](https://vercel.com). Deployments are automated via GitHub Actions — pushing to `main` triggers an SSH deploy that pulls the latest code and restarts the backend service.
 
-Set `VITE_API_URL` on Netlify to your Render backend URL. Set `FRONTEND_URL` on Render to your Netlify app URL so CORS works.
+The frontend proxies all `/api/*` requests through Vercel to avoid mixed-content issues. Set `FRONTEND_URL` in the backend `.env` to your Vercel app URL so CORS works.
