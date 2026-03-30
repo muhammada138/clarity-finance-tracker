@@ -15,13 +15,13 @@ Most finance apps show you a list of transactions and leave the thinking to you.
 
 **Key features:**
 
-- **Bank connection** — links your account via Plaid Link, no manual entry
-- **AI categorization** — every transaction is automatically sorted into food, transport, shopping, income, and more by LLaMA 3.3 70B
-- **Spending chart** — bar chart breakdown by category, excluding income
-- **Sortable transactions** — click any column header to sort by name, date, category, or amount
-- **Stat cards** — total spent, total income, and top spending category at a glance
-- **AI chat** — ask anything about your money and get answers grounded in your actual data
-- **Session persistence** — stays logged in across page refreshes
+- **Bank connection** - links your account via Plaid Link, no manual entry
+- **AI categorization** - every transaction is automatically sorted into food, transport, shopping, income, and more by LLaMA 3.3 70B
+- **Spending chart** - bar chart breakdown by category, excluding income
+- **Sortable transactions** - click any column header to sort by name, date, category, or amount
+- **Stat cards** - total spent, total income, and top spending category at a glance
+- **AI chat** - ask anything about your money and get answers grounded in your actual data
+- **Session persistence** - stays logged in across page refreshes
 
 ---
 
@@ -102,6 +102,6 @@ The chat endpoint reuses the cached transactions so every follow-up question is 
 
 ## Deployment
 
-Backend on Oracle Cloud (Ubuntu VM, systemd service), frontend on [Vercel](https://vercel.com). Deployments are automated via GitHub Actions — pushing to `main` triggers an SSH deploy that pulls the latest code and restarts the backend service.
+Backend on Oracle Cloud (Ubuntu VM, systemd service), frontend on [Vercel](https://vercel.com). Deployments are automated via GitHub Actions - pushing to `main` triggers an SSH deploy that pulls the latest code and restarts the backend service.
 
 The frontend proxies all `/api/*` requests through Vercel to avoid mixed-content issues. Set `FRONTEND_URL` in the backend `.env` to your Vercel app URL so CORS works.
