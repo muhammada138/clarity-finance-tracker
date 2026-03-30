@@ -4,3 +4,4 @@ python-dotenv
 plaid-python
 groq
 httpx
+
