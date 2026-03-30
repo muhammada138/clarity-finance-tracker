@@ -2,7 +2,7 @@ name: Deploy Backend
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "backend/**"
 
@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             cd ~/clarity-finance-tracker
-            git pull origin master
+            git pull origin main
             source backend/venv/bin/activate
             pip install -r backend/requirements.txt
             sudo systemctl restart clarity
