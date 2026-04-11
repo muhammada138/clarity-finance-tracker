@@ -32,9 +32,30 @@ function sortTransactions(txs, key, dir, catCounts) {
   });
 }
 
-function TransactionList({ transactions }) {
+function TransactionList({ transactions, loading }) {
   const [sortKey, setSortKey] = useState("date");
   const [sortDir, setSortDir] = useState("desc");
+
+  if (loading) {
+    return (
+      <div className="transaction-list">
+        <div className="card-header">
+          <span className="card-title">Recent Transactions</span>
+          <span className="card-sub">Loading...</span>
+        </div>
+        <div className="tx-skeleton-list">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="tx-skeleton-row">
+              <div className="skeleton skeleton-name" />
+              <div className="skeleton skeleton-date" />
+              <div className="skeleton skeleton-tag" />
+              <div className="skeleton skeleton-amount" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (!transactions.length) return null;
 
@@ -68,14 +89,19 @@ function TransactionList({ transactions }) {
             {COLUMNS.map((col) => (
               <th
                 key={col.key}
-                onClick={() => handleSort(col.key)}
                 className="tx-th-sortable"
                 style={col.right ? { textAlign: "right" } : undefined}
               >
-                {col.label}
-                <span className="sort-arrow">
-                  {sortKey === col.key ? arrow : " ↕"}
-                </span>
+                <button
+                  className="sort-btn"
+                  onClick={() => handleSort(col.key)}
+                  style={col.right ? { marginLeft: "auto" } : undefined}
+                >
+                  {col.label}
+                  <span className="sort-arrow">
+                    {sortKey === col.key ? arrow : " ↕"}
+                  </span>
+                </button>
               </th>
             ))}
           </tr>

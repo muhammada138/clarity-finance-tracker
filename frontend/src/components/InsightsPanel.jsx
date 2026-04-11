@@ -32,11 +32,10 @@ function InsightsPanel({ insights, loading }) {
       </div>
 
       {loading ? (
-        <div className="analyzing">
-          Analyzing your spending
-          <div className="dot-pulse">
-            <span /><span /><span />
-          </div>
+        <div className="insights-skeleton">
+          <div className="skeleton skeleton-text" />
+          <div className="skeleton skeleton-text" />
+          <div className="skeleton skeleton-text" style={{ width: "80%" }} />
         </div>
       ) : (
         insights && <p className="insights-text">{insights}</p>

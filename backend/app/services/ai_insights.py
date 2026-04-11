@@ -1,16 +1,16 @@
 import os
 import json
-from groq import Groq
+from groq import AsyncGroq
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
 MODEL = "llama-3.3-70b-versatile"
 
 
-def ask(prompt: str, max_tokens: int = 2048) -> str:
-    response = client.chat.completions.create(
+async def ask(prompt: str, max_tokens: int = 2048) -> str:
+    response = await client.chat.completions.create(
         model=MODEL,
         max_tokens=max_tokens,
         messages=[{"role": "user", "content": prompt}],
@@ -18,13 +18,13 @@ def ask(prompt: str, max_tokens: int = 2048) -> str:
     return response.choices[0].message.content.strip()
 
 
-def categorize_transactions(transactions: list) -> list:
+async def categorize_transactions(transactions: list) -> list:
     if not transactions:
         return []
 
     items = [{"name": t.get("name", ""), "amount": t.get("amount", 0)} for t in transactions]
 
-    text = ask(
+    text = await ask(
         "Categorize each transaction into one of: food, transport, shopping, "
         "subscriptions, rent, utilities, entertainment, health, income, other.\n"
         "Base the category on the merchant name, not the amount sign. "
@@ -51,7 +51,7 @@ def categorize_transactions(transactions: list) -> list:
     return transactions
 
 
-def generate_insights(transactions: list) -> str:
+async def generate_insights(transactions: list) -> str:
     if not transactions:
         return "No transactions to analyze yet."
 
@@ -61,7 +61,7 @@ def generate_insights(transactions: list) -> str:
         cat = t.get("category", "other")
         summary[cat] = round(summary.get(cat, 0) + t.get("amount", 0), 2)
 
-    return ask(
+    return await ask(
         "You're analyzing someone's personal spending. Give 3-4 short, useful insights "
         "based on this spending breakdown by category (amounts in USD). Be direct and "
         "human, like a helpful friend reviewing their finances. No bullet point headers, "
@@ -70,13 +70,13 @@ def generate_insights(transactions: list) -> str:
     )
 
 
-def chat_about_spending(transactions: list, question: str) -> str:
+async def chat_about_spending(transactions: list, question: str) -> str:
     if not transactions:
         return "No transaction data available yet. Connect your bank first."
 
     tx_text = json.dumps(transactions, indent=2, default=str)
 
-    return ask(
+    return await ask(
         "You have access to the user's transaction data. Answer their question "
         "in plain conversational text — no markdown, no asterisks, no bullet headers, no numbered lists. "
         "Be brief and direct, 2-4 sentences max unless a longer answer truly needs more. "
