@@ -6,3 +6,6 @@ __pycache__/
 dist/
 .venv/
 .claude/
+PLAN.md
+.gemini/
+.gemini.md
