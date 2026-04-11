@@ -86,10 +86,15 @@ function App() {
   return (
     <div className="app">
       <header>
-        <div className="logo" onClick={connected ? handleDisconnect : undefined} style={connected ? { cursor: "pointer" } : undefined}>
+        <button
+          className="logo"
+          onClick={connected ? handleDisconnect : undefined}
+          style={connected ? { cursor: "pointer" } : undefined}
+          aria-label={connected ? "Disconnect bank account" : "Clarity Home"}
+        >
           <ClarityLogo />
           Clarity
-        </div>
+        </button>
         {connected && (
           <div className="header-actions">
             <span className="badge">Connected</span>
@@ -147,7 +152,7 @@ function App() {
           <Dashboard transactions={transactions} />
 
           <div className="lower">
-            <TransactionList transactions={transactions} />
+            <TransactionList transactions={transactions} loading={insightsLoading} />
             <InsightsPanel insights={insights} loading={insightsLoading} />
           </div>
         </main>
