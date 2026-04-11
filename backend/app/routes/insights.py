@@ -11,13 +11,13 @@ class ChatRequest(BaseModel):
     question: str
 
 
-def get_categorized_transactions():
+async def get_categorized_transactions():
     if not state.store["access_token"]:
         raise HTTPException(status_code=400, detail="no bank connected yet")
     if state.store["transactions"] is not None:
         return state.store["transactions"]
-    raw = plaid_svc.fetch_transactions(state.store["access_token"])
-    transactions = ai_insights.categorize_transactions(raw)
+    raw = await plaid_svc.fetch_transactions(state.store["access_token"])
+    transactions = await ai_insights.categorize_transactions(raw)
     state.store["transactions"] = transactions
     return transactions
 
@@ -26,8 +26,8 @@ def get_categorized_transactions():
 @router.get("/")
 async def get_insights():
     try:
-        transactions = get_categorized_transactions()
-        insights = ai_insights.generate_insights(transactions)
+        transactions = await get_categorized_transactions()
+        insights = await ai_insights.generate_insights(transactions)
         return {"insights": insights, "transactions": transactions}
     except HTTPException:
         raise
@@ -38,8 +38,8 @@ async def get_insights():
 @router.post("/chat")
 async def chat(body: ChatRequest):
     try:
-        transactions = get_categorized_transactions()
-        response = ai_insights.chat_about_spending(transactions, body.question)
+        transactions = await get_categorized_transactions()
+        response = await ai_insights.chat_about_spending(transactions, body.question)
         return {"response": response}
     except HTTPException:
         raise
