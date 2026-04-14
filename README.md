@@ -7,7 +7,7 @@ AI-powered personal finance tracker. Connect your bank, get an instant breakdown
 ![Plaid](https://img.shields.io/badge/Plaid-Sandbox-00C853?style=flat)
 ![Groq](https://img.shields.io/badge/Groq_AI-LLaMA_3.3_70B-orange?style=flat)
 
-Live at [clarity-finance-tracker.vercel.app](https://clarity-finance-tracker.vercel.app/)
+Live at [Clarity](https://clarity-finance-tracker.vercel.app/)
 
 ---
 
