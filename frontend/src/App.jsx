@@ -13,7 +13,13 @@ function App() {
   const [insights, setInsights] = useState("");
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
-  const [initializing, setInitializing] = useState(() => localStorage.getItem("connected") === "true");
+  const [initializing, setInitializing] = useState(() => {
+    try {
+      return localStorage.getItem("connected") === "true";
+    } catch (e) {
+      return false;
+    }
+  });
 
   async function handleDisconnect() {
     await disconnect();
@@ -58,21 +64,23 @@ function App() {
   }
 
   const total = useMemo(
-    () => transactions.filter((t) => t.category !== "income").reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    () => (transactions || []).filter((t) => t && t.category !== "income").reduce((sum, t) => sum + Math.abs(t.amount || 0), 0),
     [transactions]
   );
 
   const totalIncome = useMemo(
-    () => transactions.filter((t) => t.category === "income").reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    () => (transactions || []).filter((t) => t && t.category === "income").reduce((sum, t) => sum + Math.abs(t.amount || 0), 0),
     [transactions]
   );
 
   const topCat = useMemo(() => {
     const totals = {};
-    for (const t of transactions) {
+    const txs = transactions || [];
+    for (const t of txs) {
+      if (!t) continue;
       const c = t.category || "other";
       if (c === "income") continue;
-      totals[c] = (totals[c] || 0) + Math.abs(t.amount);
+      totals[c] = (totals[c] || 0) + Math.abs(t.amount || 0);
     }
     return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
   }, [transactions]);
