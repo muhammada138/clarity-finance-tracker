@@ -16,8 +16,8 @@ function sortTransactions(txs, key, dir, catCounts) {
       av = a.category === "income" ? Math.abs(a.amount) : -Math.abs(a.amount);
       bv = b.category === "income" ? Math.abs(b.amount) : -Math.abs(b.amount);
     } else if (key === "name") {
-      av = (a.merchant_name || a.name).toLowerCase();
-      bv = (b.merchant_name || b.name).toLowerCase();
+      av = (a.merchant_name || a.name || "").toLowerCase();
+      bv = (b.merchant_name || b.name || "").toLowerCase();
     } else if (key === "category") {
       // sort by count of transactions in that category
       av = catCounts[a.category || "other"] || 0;
@@ -122,7 +122,7 @@ function TransactionList({ transactions, loading }) {
                   </span>
                 </td>
                 <td className="tx-amount" style={isIncome ? { color: "#3fb950" } : undefined}>
-                  {isIncome ? "+" : "-"}${Math.abs(t.amount).toFixed(2)}
+                  {isIncome ? "+" : "-"}${Math.abs(t.amount || 0).toFixed(2)}
                 </td>
               </tr>
             );
