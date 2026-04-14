@@ -10,6 +10,10 @@ AI-powered personal finance tracker. Connect your bank, get an instant breakdown
 Live at [Clarity](https://clarity-finance-tracker.vercel.app/)
 
 ---
+## Screenshots
+
+![Clarity](./screenshot.png)
+
 
 ## What it does
 
