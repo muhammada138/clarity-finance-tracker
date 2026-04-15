@@ -33,6 +33,7 @@ async def exchange_public_token(body: ExchangeRequest):
 async def disconnect():
     state.store["access_token"] = None
     state.store["transactions"] = None
+    state.store["insights"] = None
     return {"status": "ok"}
 
 

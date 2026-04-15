@@ -1,0 +1,8 @@
+INFO:     Started server process [138214]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:36020 - "GET /insights HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36022 - "GET /insights HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36004 - "POST /plaid/link-token HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:36008 - "POST /plaid/link-token HTTP/1.1" 500 Internal Server Error

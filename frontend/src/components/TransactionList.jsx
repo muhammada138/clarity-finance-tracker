@@ -12,16 +12,17 @@ function sortTransactions(txs, key, dir, catCounts) {
   return [...txs].sort((a, b) => {
     let av, bv;
     if (key === "amount") {
-      // sort by the displayed value: income is positive, expenses are negative
-      av = a.category === "income" ? Math.abs(a.amount) : -Math.abs(a.amount);
-      bv = b.category === "income" ? Math.abs(b.amount) : -Math.abs(b.amount);
+      // Cash flow: expenses are positive in Plaid, income/refunds are negative
+      // We want to sort by cash flow where positive cash flow (income/refunds) > negative
+      av = -a.amount;
+      bv = -b.amount;
     } else if (key === "name") {
       av = (a.merchant_name || a.name || "").toLowerCase();
       bv = (b.merchant_name || b.name || "").toLowerCase();
     } else if (key === "category") {
-      // sort by count of transactions in that category
-      av = catCounts[a.category || "other"] || 0;
-      bv = catCounts[b.category || "other"] || 0;
+      // sort alphabetically
+      av = (a.category || "other").toLowerCase();
+      bv = (b.category || "other").toLowerCase();
     } else {
       av = a.date;
       bv = b.date;
@@ -108,7 +109,7 @@ function TransactionList({ transactions, loading }) {
         </thead>
         <tbody>
           {sorted.map((t) => {
-            const isIncome = t.category === "income";
+            const isPositiveCashFlow = t.amount < 0; // Negative amount in Plaid is money in
             return (
               <tr key={t.id}>
                 <td className="tx-name">{t.merchant_name || t.name}</td>
@@ -121,8 +122,8 @@ function TransactionList({ transactions, loading }) {
                     {t.category || "other"}
                   </span>
                 </td>
-                <td className="tx-amount" style={isIncome ? { color: "#3fb950" } : undefined}>
-                  {isIncome ? "+" : "-"}${Math.abs(t.amount || 0).toFixed(2)}
+                <td className="tx-amount" style={isPositiveCashFlow ? { color: "#3fb950" } : undefined}>
+                  {isPositiveCashFlow ? "+" : "-"}${Math.abs(t.amount || 0).toFixed(2)}
                 </td>
               </tr>
             );
