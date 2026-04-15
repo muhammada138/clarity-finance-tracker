@@ -27,7 +27,13 @@ async def get_categorized_transactions():
 async def get_insights():
     try:
         transactions = await get_categorized_transactions()
-        insights = await ai_insights.generate_insights(transactions)
+
+        if state.store["insights"] is not None:
+            insights = state.store["insights"]
+        else:
+            insights = await ai_insights.generate_insights(transactions)
+            state.store["insights"] = insights
+
         return {"insights": insights, "transactions": transactions}
     except HTTPException:
         raise
