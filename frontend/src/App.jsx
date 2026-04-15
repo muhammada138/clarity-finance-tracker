@@ -64,12 +64,12 @@ function App() {
   }
 
   const total = useMemo(
-    () => (transactions || []).filter((t) => t && t.category !== "income").reduce((sum, t) => sum + Math.abs(t.amount || 0), 0),
+    () => (transactions || []).filter((t) => t && t.category !== "income").reduce((sum, t) => sum + (t.amount || 0), 0),
     [transactions]
   );
 
   const totalIncome = useMemo(
-    () => (transactions || []).filter((t) => t && t.category === "income").reduce((sum, t) => sum + Math.abs(t.amount || 0), 0),
+    () => (transactions || []).filter((t) => t && t.category === "income").reduce((sum, t) => sum - (t.amount || 0), 0),
     [transactions]
   );
 
@@ -80,7 +80,7 @@ function App() {
       if (!t) continue;
       const c = t.category || "other";
       if (c === "income") continue;
-      totals[c] = (totals[c] || 0) + Math.abs(t.amount || 0);
+      totals[c] = (totals[c] || 0) + (t.amount || 0);
     }
     return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
   }, [transactions]);
