@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { categoryColors } from "../constants/colors";
 
 const COLUMNS = [
@@ -69,13 +69,17 @@ function TransactionList({ transactions, loading }) {
     }
   }
 
-  const catCounts = {};
-  for (const t of transactions) {
-    const c = t.category || "other";
-    catCounts[c] = (catCounts[c] || 0) + 1;
-  }
-
-  const sorted = sortTransactions(transactions, sortKey, sortDir, catCounts);
+  const { catCounts, sorted } = useMemo(() => {
+    const counts = {};
+    for (const t of transactions) {
+      const c = t.category || "other";
+      counts[c] = (counts[c] || 0) + 1;
+    }
+    return {
+      catCounts: counts,
+      sorted: sortTransactions(transactions, sortKey, sortDir, counts),
+    };
+  }, [transactions, sortKey, sortDir]);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
 
   return (
