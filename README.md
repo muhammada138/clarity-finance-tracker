@@ -1,6 +1,6 @@
 # Clarity
 
-An intelligent financial dashboard that transforms your banking data into meaningful insights. By linking securely through the Plaid API, it automatically categorizes your transactions and allows you to have natural conversations with an AI assistant about your spending habits and financial health.
+An intelligent financial dashboard that connects your real-world banking data with advanced AI. By linking securely through the Plaid API, it automatically organizes every transaction into logical categories and provides natural language insights about your spending patterns.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
