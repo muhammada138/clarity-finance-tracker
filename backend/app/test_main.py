@@ -39,4 +39,19 @@ async def test_insights_endpoint(mocker):
     assert response.status_code == 200
     assert "insights" in response.json()
     assert response.json()["insights"] == "You spend a lot on food."
+
+def test_disconnect_endpoint():
+    # Setup state
+    state.store["access_token"] = "fake_token"
+    state.store["transactions"] = [{"name": "UBER EATS", "amount": 25.50}]
+    state.store["insights"] = "fake_insights"
+
+    response = client.post("/plaid/disconnect")
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
     
+    # Assert state cleared
+    assert state.store["access_token"] is None
+    assert state.store["transactions"] is None
+    assert state.store["insights"] is None
