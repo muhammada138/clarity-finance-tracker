@@ -40,3 +40,9 @@ async def test_insights_endpoint(mocker):
     assert "insights" in response.json()
     assert response.json()["insights"] == "You spend a lot on food."
     
+
+def test_get_transactions_no_bank_connection():
+    state.store["access_token"] = None
+    response = client.get("/plaid/transactions")
+    assert response.status_code == 400
+    assert response.json()["detail"] == "no bank connected yet"
