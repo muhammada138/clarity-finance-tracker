@@ -11,8 +11,3 @@ export const categoryColors = {
   other: "#6b7280",
 };
 
-export const brandColors = {
-  gold: "#c89b3c",
-  deepDark: "#050a18",
-  cyan: "#00d4ff",
-};
