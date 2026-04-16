@@ -22,7 +22,7 @@ def create_app():
         allow_origin_regex=r"http://localhost:(5173|3000)$",
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
-        allow_headers=["*"],
+        allow_headers=["Content-Type", "Accept", "Authorization"],
     )
 
     app.include_router(plaid.router, prefix="/plaid")
