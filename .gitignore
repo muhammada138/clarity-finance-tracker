@@ -9,3 +9,10 @@ dist/
 PLAN.md
 .gemini/
 .gemini.md
+
+# Bot Planning & Artifacts
+plan.md
+*.plan.md
+docs/maestro/
+docs/superpowers/
+docs/plans/

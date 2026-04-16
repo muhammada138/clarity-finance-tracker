@@ -1,6 +1,6 @@
 # Clarity
 
-AI-powered personal finance tracker. Connect your bank, get an instant breakdown of your spending, and chat with an LLM that knows your actual transactions.
+An intelligent financial dashboard that transforms your banking data into meaningful insights. By linking securely through the Plaid API, it automatically categorizes your transactions and allows you to have natural conversations with an AI assistant about your spending habits and financial health.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
