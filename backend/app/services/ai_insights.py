@@ -9,11 +9,16 @@ client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY", "dummy_key"))
 MODEL = "llama-3.3-70b-versatile"
 
 
-async def ask(prompt: str, max_tokens: int = 2048) -> str:
+async def ask(prompt: str, max_tokens: int = 2048, system_prompt: str = None) -> str:
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
     response = await client.chat.completions.create(
         model=MODEL,
         max_tokens=max_tokens,
-        messages=[{"role": "user", "content": prompt}],
+        messages=messages,
     )
     return response.choices[0].message.content.strip()
 
@@ -77,10 +82,13 @@ async def chat_about_spending(transactions: list, question: str) -> str:
     tx_text = json.dumps(transactions, indent=2, default=str)
 
     return await ask(
-        "You have access to the user's transaction data. Answer their question "
-        "in plain conversational text — no markdown, no asterisks, no bullet headers, no numbered lists. "
-        "Be brief and direct, 2-4 sentences max unless a longer answer truly needs more. "
-        "Use dollar amounts where relevant.\n\n"
-        f"Transactions:\n{tx_text}\n\nQuestion: {question}",
+        question,
         max_tokens=512,
+        system_prompt=(
+            "You have access to the user's transaction data. Answer their question "
+            "in plain conversational text — no markdown, no asterisks, no bullet headers, no numbered lists. "
+            "Be brief and direct, 2-4 sentences max unless a longer answer truly needs more. "
+            "Use dollar amounts where relevant.\n\n"
+            f"Transactions:\n{tx_text}"
+        ),
     )
