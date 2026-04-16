@@ -40,3 +40,25 @@ async def test_insights_endpoint(mocker):
     assert "insights" in response.json()
     assert response.json()["insights"] == "You spend a lot on food."
     
+
+@pytest.mark.asyncio
+async def test_create_link_token(mocker):
+    mock_create_link_token = mocker.patch("app.services.plaid_client.create_link_token")
+    mock_create_link_token.return_value = "link-sandbox-fake-token"
+
+    response = client.post("/plaid/link-token")
+
+    assert response.status_code == 200
+    assert response.json() == {"link_token": "link-sandbox-fake-token"}
+    mock_create_link_token.assert_called_once_with("demo-user")
+
+@pytest.mark.asyncio
+async def test_create_link_token_error(mocker):
+    mock_create_link_token = mocker.patch("app.services.plaid_client.create_link_token")
+    mock_create_link_token.side_effect = Exception("Plaid API Error")
+
+    response = client.post("/plaid/link-token")
+
+    assert response.status_code == 500
+    assert response.json() == {"detail": "Plaid API Error"}
+    mock_create_link_token.assert_called_once_with("demo-user")
