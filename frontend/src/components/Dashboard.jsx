@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -23,17 +24,19 @@ function CustomTooltip({ active, payload }) {
 function Dashboard({ transactions }) {
   if (!transactions.length) return null;
 
-  const totals = {};
-  for (const t of transactions) {
-    const cat = t.category || "other";
-    if (cat === "income") continue;
-    totals[cat] = (totals[cat] || 0) + t.amount;
-  }
+  const chartData = useMemo(() => {
+    const totals = {};
+    for (const t of transactions) {
+      const cat = t.category || "other";
+      if (cat === "income") continue;
+      totals[cat] = (totals[cat] || 0) + t.amount;
+    }
 
-  const chartData = Object.entries(totals)
-    .filter(([_, amount]) => amount > 0) // optionally exclude negative categories
-    .map(([category, amount]) => ({ category, amount: parseFloat(amount.toFixed(2)) }))
-    .sort((a, b) => b.amount - a.amount);
+    return Object.entries(totals)
+      .filter(([_, amount]) => amount > 0) // optionally exclude negative categories
+      .map(([category, amount]) => ({ category, amount: parseFloat(amount.toFixed(2)) }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [transactions]);
 
   return (
     <div className="dashboard">
