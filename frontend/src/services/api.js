@@ -20,13 +20,6 @@ export async function exchangePublicToken(public_token) {
   return data;
 }
 
-export async function getTransactions() {
-  const res = await fetch(`${BASE}/plaid/transactions`);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || "failed to fetch transactions");
-  return data.transactions;
-}
-
 export async function getInsights() {
   const res = await fetch(`${BASE}/insights`);
   const data = await res.json();

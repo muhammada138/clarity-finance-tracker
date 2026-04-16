@@ -35,14 +35,3 @@ async def disconnect():
     state.store["transactions"] = None
     state.store["insights"] = None
     return {"status": "ok"}
-
-
-@router.get("/transactions")
-async def get_transactions():
-    if not state.store["access_token"]:
-        raise HTTPException(status_code=400, detail="no bank connected yet")
-    try:
-        transactions = await plaid_svc.fetch_transactions(state.store["access_token"])
-        return {"transactions": transactions}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
