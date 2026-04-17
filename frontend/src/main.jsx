@@ -5,11 +5,32 @@ import App from "./App";
 window.onerror = function(message, source, lineno, colno, error) {
   const root = document.getElementById("root");
   if (root) {
-    root.innerHTML = `<div style="padding: 20px; color: #f85149; background: #161b22; height: 100vh;">
-      <h2>App Crash Detected</h2>
-      <p>${message}</p>
-      <small>${source}:${lineno}</small>
-    </div>`;
+    // Clear root content
+    root.innerHTML = '';
+
+    // Create container
+    const container = document.createElement("div");
+    container.style.cssText = "padding: 20px; color: #f85149; background: #161b22; height: 100vh;";
+
+    // Create title
+    const title = document.createElement("h2");
+    title.textContent = "App Crash Detected";
+
+    // Create message element
+    const msgElement = document.createElement("p");
+    msgElement.textContent = message;
+
+    // Create source element
+    const sourceElement = document.createElement("small");
+    sourceElement.textContent = `${source}:${lineno}`;
+
+    // Append children
+    container.appendChild(title);
+    container.appendChild(msgElement);
+    container.appendChild(sourceElement);
+
+    // Append container to root
+    root.appendChild(container);
   }
 };
 
