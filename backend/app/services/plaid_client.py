@@ -17,16 +17,18 @@ PLAID_CLIENT_ID = os.getenv("PLAID_CLIENT_ID")
 PLAID_SECRET = os.getenv("PLAID_SECRET")
 
 
+_configuration = plaid.Configuration(
+    host=plaid.Environment.Sandbox,
+    api_key={
+        "clientId": PLAID_CLIENT_ID,
+        "secret": PLAID_SECRET,
+    },
+)
+_api_client = plaid.ApiClient(_configuration)
+_plaid_api_client = plaid_api.PlaidApi(_api_client)
+
 def get_plaid_client():
-    configuration = plaid.Configuration(
-        host=plaid.Environment.Sandbox,
-        api_key={
-            "clientId": PLAID_CLIENT_ID,
-            "secret": PLAID_SECRET,
-        },
-    )
-    api_client = plaid.ApiClient(configuration)
-    return plaid_api.PlaidApi(api_client)
+    return _plaid_api_client
 
 
 async def create_link_token(user_id: str):
