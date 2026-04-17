@@ -63,15 +63,21 @@ function App() {
     loadData();
   }
 
-  const total = useMemo(
-    () => (transactions || []).filter((t) => t && t.category !== "income").reduce((sum, t) => sum + (t.amount || 0), 0),
-    [transactions]
-  );
-
-  const totalIncome = useMemo(
-    () => (transactions || []).filter((t) => t && t.category === "income").reduce((sum, t) => sum - (t.amount || 0), 0),
-    [transactions]
-  );
+  const { total, totalIncome } = useMemo(() => {
+    return (transactions || []).reduce(
+      (acc, t) => {
+        if (t) {
+          if (t.category === "income") {
+            acc.totalIncome -= t.amount || 0;
+          } else {
+            acc.total += t.amount || 0;
+          }
+        }
+        return acc;
+      },
+      { total: 0, totalIncome: 0 }
+    );
+  }, [transactions]);
 
   const topCat = useMemo(() => {
     const totals = {};
