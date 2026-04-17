@@ -85,7 +85,6 @@ FRONTEND_URL=http://localhost:5173   # set to your deployed frontend URL in prod
 |---|---|---|
 | `POST` | `/plaid/link-token` | Create a Plaid Link token to initiate bank connection |
 | `POST` | `/plaid/exchange-token` | Exchange public token for access token after Plaid Link |
-| `GET` | `/plaid/transactions` | Fetch raw transactions from Plaid |
 | `POST` | `/plaid/disconnect` | Clear the stored access token and session |
 | `GET` | `/insights` | Categorize transactions with AI and generate spending insights |
 | `POST` | `/insights/chat` | Ask a question about your spending |
