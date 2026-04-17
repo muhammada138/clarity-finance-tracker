@@ -39,4 +39,34 @@ async def test_insights_endpoint(mocker):
     assert response.status_code == 200
     assert "insights" in response.json()
     assert response.json()["insights"] == "You spend a lot on food."
+
+@pytest.mark.asyncio
+async def test_chat_endpoint(mocker):
+    # Set fake state
+    state.store["access_token"] = "fake_token"
+    state.store["transactions"] = None
+
+    # Mocking Plaid client and AI services
+    mock_plaid = mocker.patch("app.services.plaid_client.fetch_transactions")
+    mock_plaid.return_value = [
+        {"name": "UBER EATS", "amount": 25.50, "date": "2023-10-01"}
+    ]
+
+    mock_categorize = mocker.patch("app.services.ai_insights.categorize_transactions")
+    mock_categorize.return_value = [
+        {"name": "UBER EATS", "amount": 25.50, "date": "2023-10-01", "category": "food"}
+    ]
+
+    mock_chat = mocker.patch("app.services.ai_insights.chat_about_spending")
+    mock_chat.return_value = "You spent 25.50 dollars on food."
+
+    response = client.post("/insights/chat", json={"question": "How much did I spend on food?"})
+
+    # If 307 it might redirect because of router configs, fallback to check
+    if response.status_code == 307:
+        response = client.post("/insights/chat/", json={"question": "How much did I spend on food?"})
+
+    assert response.status_code == 200
+    assert "response" in response.json()
+    assert response.json()["response"] == "You spent 25.50 dollars on food."
     
