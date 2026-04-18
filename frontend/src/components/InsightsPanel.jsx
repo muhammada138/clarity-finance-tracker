@@ -42,7 +42,7 @@ function InsightsPanel({ insights, loading }) {
       )}
 
       <div className="chat-section">
-        <span className="section-label">Ask anything</span>
+        <label htmlFor="ai-chat-input" className="section-label">Ask anything</label>
         <div className="chat-messages">
           {messages.map((m, i) => (
             <div key={i} className={`message ${m.role}`}>
@@ -56,6 +56,7 @@ function InsightsPanel({ insights, loading }) {
 
         <form onSubmit={handleSend} className="chat-form">
           <input
+            id="ai-chat-input"
             className="chat-input"
             type="text"
             value={question}
