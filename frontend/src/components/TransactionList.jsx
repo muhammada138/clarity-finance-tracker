@@ -58,7 +58,19 @@ function TransactionList({ transactions, loading }) {
     );
   }
 
-  if (!transactions.length) return null;
+  if (!transactions.length) {
+    return (
+      <div className="transaction-list">
+        <div className="card-header">
+          <span className="card-title">Recent Transactions</span>
+          <span className="card-sub">0 total</span>
+        </div>
+        <div style={{ padding: "40px 0", textAlign: "center", color: "#7d8590", fontSize: "0.85rem" }}>
+          No transactions yet.
+        </div>
+      </div>
+    );
+  }
 
   function handleSort(key) {
     if (key === sortKey) {
@@ -96,6 +108,7 @@ function TransactionList({ transactions, loading }) {
                 key={col.key}
                 className="tx-th-sortable"
                 style={col.right ? { textAlign: "right" } : undefined}
+                aria-sort={sortKey === col.key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
               >
                 <button
                   className="sort-btn"
@@ -103,7 +116,7 @@ function TransactionList({ transactions, loading }) {
                   style={col.right ? { marginLeft: "auto" } : undefined}
                 >
                   {col.label}
-                  <span className="sort-arrow">
+                  <span className="sort-arrow" aria-hidden="true">
                     {sortKey === col.key ? arrow : " ↕"}
                   </span>
                 </button>
