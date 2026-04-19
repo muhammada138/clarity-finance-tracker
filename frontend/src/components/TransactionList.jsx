@@ -8,29 +8,33 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
+// Bolt: Optimization - Use Schwartzian transform (map-sort-map) to avoid recalculating
+// expensive string operations like .toLowerCase() during the O(N log N) sort comparison phase.
 function sortTransactions(txs, key, dir, catCounts) {
-  return [...txs].sort((a, b) => {
-    let av, bv;
+  const mapped = txs.map((t) => {
+    let value;
     if (key === "amount") {
       // Cash flow: expenses are positive in Plaid, income/refunds are negative
       // We want to sort by cash flow where positive cash flow (income/refunds) > negative
-      av = -a.amount;
-      bv = -b.amount;
+      value = -t.amount;
     } else if (key === "name") {
-      av = (a.merchant_name || a.name || "").toLowerCase();
-      bv = (b.merchant_name || b.name || "").toLowerCase();
+      value = (t.merchant_name || t.name || "").toLowerCase();
     } else if (key === "category") {
       // sort alphabetically
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
+      value = (t.category || "other").toLowerCase();
     } else {
-      av = a.date;
-      bv = b.date;
+      value = t.date;
     }
-    if (av < bv) return dir === "asc" ? -1 : 1;
-    if (av > bv) return dir === "asc" ? 1 : -1;
+    return { value, t };
+  });
+
+  mapped.sort((a, b) => {
+    if (a.value < b.value) return dir === "asc" ? -1 : 1;
+    if (a.value > b.value) return dir === "asc" ? 1 : -1;
     return 0;
   });
+
+  return mapped.map(item => item.t);
 }
 
 function TransactionList({ transactions, loading }) {
