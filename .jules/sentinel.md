@@ -1,0 +1,4 @@
+## 2024-05-18 - Prevented Information Leakage in API Endpoints
+**Vulnerability:** The backend FastAPI API endpoints for Plaid and Insights were previously catching exceptions and returning the raw string representation `str(e)` in HTTP 500 responses. This is an information leakage vulnerability because it can expose internal state, paths, or logic details directly to users via error messages.
+**Learning:** Returning `str(e)` directly inside an HTTPException is a common pattern for easy debugging but violates the principle of failing securely by leaking potentially sensitive information.
+**Prevention:** Always log exceptions securely on the backend using the logging module `logger.error("Message", exc_info=True)` and return only generic, safe messages like "An internal error occurred" to the client.
