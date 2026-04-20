@@ -1,0 +1,3 @@
+## 2024-04-20 - Accessible Sortable Tables
+**Learning:** Decorative sort arrow characters (like "↑", "↓", or "↕") in sortable table headers are often incorrectly read aloud by screen readers, causing confusion for users navigating the table structure. Additionally, the `aria-sort` attribute is required on the `<th>` element itself, not the interactive button inside it, to correctly announce the sort state.
+**Action:** When creating sortable tables, ensure `aria-sort` is applied to the `<th>` elements ("ascending", "descending", or "none"), apply `aria-hidden="true"` to any decorative sorting arrows, and add explicit `aria-label`s to the sorting buttons to clarify their interactive purpose.
