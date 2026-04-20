@@ -8,29 +8,38 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
+// Optimizes sort operations by pre-calculating sort values (Schwartzian transform)
+// Reduces expensive string operations like .toLowerCase() from O(N log N) to O(N)
 function sortTransactions(txs, key, dir, catCounts) {
-  return [...txs].sort((a, b) => {
-    let av, bv;
-    if (key === "amount") {
-      // Cash flow: expenses are positive in Plaid, income/refunds are negative
-      // We want to sort by cash flow where positive cash flow (income/refunds) > negative
-      av = -a.amount;
-      bv = -b.amount;
-    } else if (key === "name") {
-      av = (a.merchant_name || a.name || "").toLowerCase();
-      bv = (b.merchant_name || b.name || "").toLowerCase();
+  // Fast path for non-string properties
+  if (key === "amount" || key === "date") {
+    return [...txs].sort((a, b) => {
+      let av = key === "amount" ? -a.amount : a.date;
+      let bv = key === "amount" ? -b.amount : b.date;
+      if (av < bv) return dir === "asc" ? -1 : 1;
+      if (av > bv) return dir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // Schwartzian transform for string properties
+  const mapped = txs.map(t => {
+    let val = "";
+    if (key === "name") {
+      val = (t.merchant_name || t.name || "").toLowerCase();
     } else if (key === "category") {
-      // sort alphabetically
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
-    } else {
-      av = a.date;
-      bv = b.date;
+      val = (t.category || "other").toLowerCase();
     }
-    if (av < bv) return dir === "asc" ? -1 : 1;
-    if (av > bv) return dir === "asc" ? 1 : -1;
+    return { t, val };
+  });
+
+  mapped.sort((a, b) => {
+    if (a.val < b.val) return dir === "asc" ? -1 : 1;
+    if (a.val > b.val) return dir === "asc" ? 1 : -1;
     return 0;
   });
+
+  return mapped.map(item => item.t);
 }
 
 function TransactionList({ transactions, loading }) {
