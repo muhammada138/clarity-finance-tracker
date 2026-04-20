@@ -1,0 +1,3 @@
+## 2024-04-20 - Schwartzian Transform for String Sorting in React
+**Learning:** Doing `.toLowerCase()` inside a sort comparator creates a significant performance bottleneck because the string transformation runs $O(N \log N)$ times instead of just $O(N)$ times. This becomes noticeable when sorting large arrays of objects, such as lists of transactions in React where sorting might be triggered frequently by user interaction.
+**Action:** Use a Schwartzian transform (map-sort-map) for complex sorts involving string manipulation. First, map the array to include pre-computed sort values (e.g., lowercased strings), then sort the mapped array based on those pre-computed values, and finally map back to the original objects. Fast path non-string properties to avoid overhead.
