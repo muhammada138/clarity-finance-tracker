@@ -8,29 +8,32 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
+// Optimized sorting using Schwartzian transform (map-sort-map)
+// Prevents O(N log N) repeated string operations like .toLowerCase()
 function sortTransactions(txs, key, dir, catCounts) {
-  return [...txs].sort((a, b) => {
-    let av, bv;
-    if (key === "amount") {
-      // Cash flow: expenses are positive in Plaid, income/refunds are negative
-      // We want to sort by cash flow where positive cash flow (income/refunds) > negative
-      av = -a.amount;
-      bv = -b.amount;
-    } else if (key === "name") {
-      av = (a.merchant_name || a.name || "").toLowerCase();
-      bv = (b.merchant_name || b.name || "").toLowerCase();
-    } else if (key === "category") {
-      // sort alphabetically
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
-    } else {
-      av = a.date;
-      bv = b.date;
-    }
-    if (av < bv) return dir === "asc" ? -1 : 1;
-    if (av > bv) return dir === "asc" ? 1 : -1;
-    return 0;
-  });
+  return txs
+    .map((t, index) => {
+      let val;
+      if (key === "amount") {
+        // Cash flow: expenses are positive in Plaid, income/refunds are negative
+        // We want to sort by cash flow where positive cash flow (income/refunds) > negative
+        val = -t.amount;
+      } else if (key === "name") {
+        val = (t.merchant_name || t.name || "").toLowerCase();
+      } else if (key === "category") {
+        // sort alphabetically
+        val = (t.category || "other").toLowerCase();
+      } else {
+        val = t.date;
+      }
+      return { index, val };
+    })
+    .sort((a, b) => {
+      if (a.val < b.val) return dir === "asc" ? -1 : 1;
+      if (a.val > b.val) return dir === "asc" ? 1 : -1;
+      return 0;
+    })
+    .map(({ index }) => txs[index]);
 }
 
 function TransactionList({ transactions, loading }) {
