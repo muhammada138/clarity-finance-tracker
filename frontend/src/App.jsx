@@ -91,11 +91,11 @@ function App() {
     return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
   }, [transactions]);
 
-  const today = new Date().toLocaleDateString("en-US", {
+  const today = useMemo(() => new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
-  });
+  }), []);
 
   return (
     <div className="app">
