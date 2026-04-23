@@ -91,24 +91,34 @@ function TransactionList({ transactions, loading }) {
       <table className="tx-table">
         <thead>
           <tr>
-            {COLUMNS.map((col) => (
-              <th
-                key={col.key}
-                className="tx-th-sortable"
-                style={col.right ? { textAlign: "right" } : undefined}
-              >
-                <button
-                  className="sort-btn"
-                  onClick={() => handleSort(col.key)}
-                  style={col.right ? { marginLeft: "auto" } : undefined}
+            {COLUMNS.map((col) => {
+              const isSorted = sortKey === col.key;
+              const ariaSort = isSorted ? (sortDir === "asc" ? "ascending" : "descending") : "none";
+              const nextDir = isSorted
+                ? (sortDir === "asc" ? "descending" : "ascending")
+                : (col.key === "amount" || col.key === "category" ? "descending" : "ascending");
+
+              return (
+                <th
+                  key={col.key}
+                  className="tx-th-sortable"
+                  style={col.right ? { textAlign: "right" } : undefined}
+                  aria-sort={ariaSort}
                 >
-                  {col.label}
-                  <span className="sort-arrow">
-                    {sortKey === col.key ? arrow : " ↕"}
-                  </span>
-                </button>
-              </th>
-            ))}
+                  <button
+                    className="sort-btn"
+                    onClick={() => handleSort(col.key)}
+                    style={col.right ? { marginLeft: "auto" } : undefined}
+                    aria-label={`Sort by ${col.label} ${nextDir}`}
+                  >
+                    {col.label}
+                    <span className="sort-arrow" aria-hidden="true">
+                      {isSorted ? arrow : " ↕"}
+                    </span>
+                  </button>
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>

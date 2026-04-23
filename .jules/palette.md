@@ -1,0 +1,3 @@
+## 2024-04-23 - Screen Reader Redundancies in Sortable Tables
+**Learning:** Decorative sorting indicators (like up/down arrows) in column headers create redundant and sometimes confusing announcements for screen reader users when sorting buttons already have descriptive `aria-label`s. Furthermore, screen readers expect the table header (`<th>`) itself to announce the sort state via `aria-sort`.
+**Action:** When implementing sortable tables, apply `aria-sort` directly to the `<th>` element, place an explicit `aria-label` on the interactive `<button>`, and hide purely decorative visual indicators from screen readers using `aria-hidden="true"`.
