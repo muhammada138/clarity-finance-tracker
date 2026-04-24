@@ -2,7 +2,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services import plaid_client as plaid_svc
 from app.services import ai_insights
+import logging
 from app import state
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -38,7 +41,8 @@ async def get_insights():
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error getting insights")
+        raise HTTPException(status_code=500, detail="An internal server error occurred")
 
 
 @router.post("/chat")
@@ -50,4 +54,5 @@ async def chat(body: ChatRequest):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error in chat")
+        raise HTTPException(status_code=500, detail="An internal server error occurred")
