@@ -8,7 +8,7 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
-function sortTransactions(txs, key, dir, catCounts) {
+function sortTransactions(txs, key, dir) {
   return [...txs].sort((a, b) => {
     let av, bv;
     if (key === "amount") {
@@ -69,16 +69,9 @@ function TransactionList({ transactions, loading }) {
     }
   }
 
-  const { catCounts, sorted } = useMemo(() => {
-    const counts = {};
-    for (const t of transactions) {
-      const c = t.category || "other";
-      counts[c] = (counts[c] || 0) + 1;
-    }
-    return {
-      catCounts: counts,
-      sorted: sortTransactions(transactions, sortKey, sortDir, counts),
-    };
+  const sorted = useMemo(() => {
+    // Optimization: Removed redundant O(N) category counting loop that was unused
+    return sortTransactions(transactions, sortKey, sortDir);
   }, [transactions, sortKey, sortDir]);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
 
