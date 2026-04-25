@@ -96,14 +96,16 @@ function TransactionList({ transactions, loading }) {
                 key={col.key}
                 className="tx-th-sortable"
                 style={col.right ? { textAlign: "right" } : undefined}
+                aria-sort={sortKey === col.key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
               >
                 <button
                   className="sort-btn"
                   onClick={() => handleSort(col.key)}
                   style={col.right ? { marginLeft: "auto" } : undefined}
+                  aria-label={`Sort by ${col.label}`}
                 >
                   {col.label}
-                  <span className="sort-arrow">
+                  <span className="sort-arrow" aria-hidden="true">
                     {sortKey === col.key ? arrow : " ↕"}
                   </span>
                 </button>
