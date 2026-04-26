@@ -1,0 +1,4 @@
+## 2026-04-26 - Prevent Information Exposure Through Error Messages
+**Vulnerability:** Unhandled exceptions in backend API endpoints (e.g., `/plaid/link-token`, `/insights`) were returning raw error details (using `str(e)`) directly to the client via HTTP 500 responses.
+**Learning:** Directly exposing internal error strings (`str(e)`) to the frontend leaks sensitive implementation details (e.g., stack traces, database states, external API error messages) to potentially malicious users.
+**Prevention:** In FastAPI route handlers, always catch specific expected exceptions (like `HTTPException`) to re-raise them. For generic unexpected `Exception`s, log the detailed error server-side (using `logger.exception()`) and return a generic, non-informative message (e.g., "Internal server error") in the `HTTPException` detail field to the client.
