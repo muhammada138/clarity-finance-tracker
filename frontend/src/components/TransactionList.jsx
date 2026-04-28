@@ -8,27 +8,41 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
-function sortTransactions(txs, key, dir, catCounts) {
-  return [...txs].sort((a, b) => {
-    let av, bv;
-    if (key === "amount") {
-      // Cash flow: expenses are positive in Plaid, income/refunds are negative
-      // We want to sort by cash flow where positive cash flow (income/refunds) > negative
-      av = -a.amount;
-      bv = -b.amount;
-    } else if (key === "name") {
-      av = (a.merchant_name || a.name || "").toLowerCase();
-      bv = (b.merchant_name || b.name || "").toLowerCase();
-    } else if (key === "category") {
-      // sort alphabetically
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
-    } else {
-      av = a.date;
-      bv = b.date;
-    }
-    if (av < bv) return dir === "asc" ? -1 : 1;
-    if (av > bv) return dir === "asc" ? 1 : -1;
+function sortTransactions(txs, key, dir) {
+  const sorted = [...txs];
+  const factor = dir === "asc" ? 1 : -1;
+
+  if (key === "amount") {
+    // Cash flow: expenses are positive in Plaid, income/refunds are negative
+    // We want to sort by cash flow where positive cash flow (income/refunds) > negative
+    // i.e., sort by -amount. If we do -a.amount - -b.amount it is equal to b.amount - a.amount
+    return sorted.sort((a, b) => (b.amount - a.amount) * factor);
+  }
+
+  if (key === "name") {
+    return sorted.sort((a, b) => {
+      const av = (a.merchant_name || a.name || "").toLowerCase();
+      const bv = (b.merchant_name || b.name || "").toLowerCase();
+      if (av < bv) return -factor;
+      if (av > bv) return factor;
+      return 0;
+    });
+  }
+
+  if (key === "category") {
+    return sorted.sort((a, b) => {
+      const av = (a.category || "other").toLowerCase();
+      const bv = (b.category || "other").toLowerCase();
+      if (av < bv) return -factor;
+      if (av > bv) return factor;
+      return 0;
+    });
+  }
+
+  // date fallback
+  return sorted.sort((a, b) => {
+    if (a.date < b.date) return -factor;
+    if (a.date > b.date) return factor;
     return 0;
   });
 }
@@ -69,15 +83,9 @@ function TransactionList({ transactions, loading }) {
     }
   }
 
-  const { catCounts, sorted } = useMemo(() => {
-    const counts = {};
-    for (const t of transactions) {
-      const c = t.category || "other";
-      counts[c] = (counts[c] || 0) + 1;
-    }
+  const { sorted } = useMemo(() => {
     return {
-      catCounts: counts,
-      sorted: sortTransactions(transactions, sortKey, sortDir, counts),
+      sorted: sortTransactions(transactions, sortKey, sortDir),
     };
   }, [transactions, sortKey, sortDir]);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
