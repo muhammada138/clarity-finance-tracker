@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 from pydantic import BaseModel
 from app.services import plaid_client as plaid_svc
 from app import state
@@ -15,8 +18,11 @@ async def create_link_token():
     try:
         token = await plaid_svc.create_link_token("demo-user")
         return {"link_token": token}
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error creating link token")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/exchange-token")
@@ -25,8 +31,11 @@ async def exchange_public_token(body: ExchangeRequest):
         access_token = await plaid_svc.exchange_public_token(body.public_token)
         state.store["access_token"] = access_token
         return {"status": "ok"}
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error exchanging public token")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/disconnect")
