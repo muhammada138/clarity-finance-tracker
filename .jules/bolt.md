@@ -1,0 +1,3 @@
+## 2023-10-27 - O(N log N) Property Access in Sort
+**Learning:** Checking sort-keys and calculating comparative transformations (like converting strings to lowercase or switching polarities based on sort direction) *inside* the sort comparator causes severe repetitive evaluation overhead, as those inner branches are hit O(N log N) times rather than just once. Furthermore, JS numerical sort is much faster using subtraction rather than comparison operators.
+**Action:** Always hoist configuration conditionals outside of tight sorting loops to return optimized, direct comparator functions, and use mathematical subtraction for numerical sorts when possible.
