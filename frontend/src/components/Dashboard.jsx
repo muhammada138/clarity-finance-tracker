@@ -22,7 +22,19 @@ function CustomTooltip({ active, payload }) {
 }
 
 function Dashboard({ transactions }) {
-  if (!transactions.length) return null;
+  if (!transactions.length) {
+    return (
+      <div className="dashboard">
+        <div className="card-header">
+          <span className="card-title">Spending by Category</span>
+          <span className="card-sub">last 30 days</span>
+        </div>
+        <div style={{ padding: "40px 0", textAlign: "center", color: "#7d8590", fontSize: "0.85rem" }}>
+          No transactions to display.
+        </div>
+      </div>
+    );
+  }
 
   const chartData = useMemo(() => {
     const totals = {};
