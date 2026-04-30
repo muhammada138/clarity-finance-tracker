@@ -1,3 +1,0 @@
-## 2026-04-19 - Empty States & ARIA Sort Attributes
-**Learning:** Returning `null` in React components like `Dashboard.jsx` and `TransactionList.jsx` when data is empty causes jarring layout shifts by breaking the expected CSS grid structure. Visual sort indicators (like '↕') must be hidden from screen readers using `aria-hidden='true'`, and the table headers themselves must use `aria-sort` to properly communicate the sorting state to assistive technologies.
-**Action:** Always provide structurally consistent empty state components rather than returning `null`. Ensure interactive table headers include `aria-sort` attributes and that decorative/visual sorting icons are hidden from screen readers.
