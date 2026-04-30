@@ -1,11 +1,10 @@
+import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services import plaid_client as plaid_svc
 from app import state
-import logging
 
 logger = logging.getLogger(__name__)
-
 router = APIRouter()
 
 
@@ -19,8 +18,8 @@ async def create_link_token():
         token = await plaid_svc.create_link_token("demo-user")
         return {"link_token": token}
     except Exception as e:
-        logger.error(f"Error creating link token: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="An internal error occurred.")
+        logger.error(f"Error in plaid route: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="An internal error occurred while connecting to your bank")
 
 
 @router.post("/exchange-token")
@@ -30,8 +29,8 @@ async def exchange_public_token(body: ExchangeRequest):
         state.store["access_token"] = access_token
         return {"status": "ok"}
     except Exception as e:
-        logger.error(f"Error exchanging token: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="An internal error occurred.")
+        logger.error(f"Error in plaid route: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="An internal error occurred while connecting to your bank")
 
 
 @router.post("/disconnect")
