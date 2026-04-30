@@ -15,12 +15,23 @@ class ChatRequest(BaseModel):
 
 
 async def get_categorized_transactions():
-    if not state.store["access_token"]:
+    if not state.store["access_tokens"]:
         raise HTTPException(status_code=400, detail="no bank connected yet")
     if state.store["transactions"] is not None:
         return state.store["transactions"]
-    raw = await plaid_svc.fetch_transactions(state.store["access_token"])
-    transactions = await ai_insights.categorize_transactions(raw)
+    
+    all_raw = []
+    for token in state.store["access_tokens"]:
+        try:
+            raw = await plaid_svc.fetch_transactions(token)
+            all_raw.extend(raw)
+        except Exception as e:
+            logger.warning(f"Failed to fetch transactions for a token: {e}")
+            
+    if not all_raw:
+        return []
+
+    transactions = await ai_insights.categorize_transactions(all_raw)
     state.store["transactions"] = transactions
     return transactions
 

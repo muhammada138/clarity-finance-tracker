@@ -81,11 +81,37 @@ function TransactionList({ transactions, loading }) {
   }, [transactions, sortKey, sortDir]);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
 
+  function exportToCSV() {
+    const headers = ["Name", "Date", "Category", "Amount"];
+    const rows = sorted.map((t) => [
+      `"${(t.merchant_name || t.name || "").replace(/"/g, '""')}"`,
+      t.date,
+      t.category || "other",
+      t.amount < 0 ? Math.abs(t.amount).toFixed(2) : `-${Math.abs(t.amount).toFixed(2)}`
+    ]);
+
+    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `clarity_transactions_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <div className="transaction-list">
       <div className="card-header">
-        <span className="card-title">Recent Transactions</span>
-        <span className="card-sub">{transactions.length} total</span>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span className="card-title">Recent Transactions</span>
+          <span className="card-sub">{transactions.length} total</span>
+        </div>
+        <button className="btn-ghost" onClick={exportToCSV} style={{ marginLeft: "auto", fontSize: "0.8rem" }}>
+          ↓ Export CSV
+        </button>
       </div>
       <table className="tx-table">
         <thead>
