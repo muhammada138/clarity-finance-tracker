@@ -26,7 +26,10 @@ async def create_link_token():
 async def exchange_public_token(body: ExchangeRequest):
     try:
         access_token = await plaid_svc.exchange_public_token(body.public_token)
-        state.store["access_token"] = access_token
+        state.store["access_tokens"].append(access_token)
+        # Clear cache when new account is added
+        state.store["transactions"] = None
+        state.store["insights"] = None
         return {"status": "ok"}
     except Exception as e:
         logger.error(f"Error in plaid route: {e}", exc_info=True)
@@ -35,7 +38,7 @@ async def exchange_public_token(body: ExchangeRequest):
 
 @router.post("/disconnect")
 async def disconnect():
-    state.store["access_token"] = None
+    state.store["access_tokens"] = []
     state.store["transactions"] = None
     state.store["insights"] = None
     return {"status": "ok"}

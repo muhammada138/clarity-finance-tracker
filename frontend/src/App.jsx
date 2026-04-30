@@ -13,6 +13,7 @@ function App() {
   const [insights, setInsights] = useState("");
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
+  const [showAddMore, setShowAddMore] = useState(false);
   const [initializing, setInitializing] = useState(() => {
     try {
       return localStorage.getItem("connected") === "true";
@@ -60,6 +61,7 @@ function App() {
 
   async function handleConnected() {
     setInitializing(true);
+    setShowAddMore(false);
     loadData();
   }
 
@@ -112,7 +114,9 @@ function App() {
         {connected && (
           <div className="header-actions">
             <span className="badge">Connected</span>
-            <button className="btn-ghost" onClick={handleDisconnect}>Switch account</button>
+            {!showAddMore && (
+              <button className="btn-ghost" onClick={() => setShowAddMore(true)}>＋ Link another account</button>
+            )}
             <button className="btn-ghost btn-ghost-danger" onClick={handleDisconnect}>Log out</button>
           </div>
         )}
@@ -131,8 +135,15 @@ function App() {
           <button className="btn-primary btn-retry" onClick={loadData}>Try again</button>
           <button className="btn-ghost btn-retry" onClick={() => { setLoadError(null); localStorage.removeItem("connected"); }}>Connect different account</button>
         </div>
-      ) : !connected ? (
-        <ConnectBank onConnected={handleConnected} />
+      ) : (!connected || showAddMore) ? (
+        <>
+          {showAddMore && (
+            <div style={{ padding: "1rem 2rem", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid var(--border)" }}>
+              <button className="btn-ghost" onClick={() => setShowAddMore(false)}>← Back to dashboard</button>
+            </div>
+          )}
+          <ConnectBank onConnected={handleConnected} />
+        </>
       ) : loadError ? (
         <div className="init-screen">
           <p className="init-error">{loadError}</p>
