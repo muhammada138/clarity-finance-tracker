@@ -8,29 +8,34 @@ const COLUMNS = [
   { key: "amount", label: "Amount", right: true },
 ];
 
-function sortTransactions(txs, key, dir, catCounts) {
-  return [...txs].sort((a, b) => {
-    let av, bv;
+// ⚡ Bolt: Optimized sorting using a Schwartzian transform (map -> sort -> map)
+// This avoids repeated expensive operations like .toLowerCase() inside the sorting loop,
+// turning O(N log N) string transformations into O(N) operations.
+function sortTransactions(txs, key, dir) {
+  const mapped = txs.map((t) => {
+    let val;
     if (key === "amount") {
       // Cash flow: expenses are positive in Plaid, income/refunds are negative
       // We want to sort by cash flow where positive cash flow (income/refunds) > negative
-      av = -a.amount;
-      bv = -b.amount;
+      val = -t.amount;
     } else if (key === "name") {
-      av = (a.merchant_name || a.name || "").toLowerCase();
-      bv = (b.merchant_name || b.name || "").toLowerCase();
+      val = (t.merchant_name || t.name || "").toLowerCase();
     } else if (key === "category") {
       // sort alphabetically
-      av = (a.category || "other").toLowerCase();
-      bv = (b.category || "other").toLowerCase();
+      val = (t.category || "other").toLowerCase();
     } else {
-      av = a.date;
-      bv = b.date;
+      val = t.date;
     }
-    if (av < bv) return dir === "asc" ? -1 : 1;
-    if (av > bv) return dir === "asc" ? 1 : -1;
+    return { t, val };
+  });
+
+  mapped.sort((a, b) => {
+    if (a.val < b.val) return dir === "asc" ? -1 : 1;
+    if (a.val > b.val) return dir === "asc" ? 1 : -1;
     return 0;
   });
+
+  return mapped.map((m) => m.t);
 }
 
 function TransactionList({ transactions, loading }) {
@@ -69,16 +74,10 @@ function TransactionList({ transactions, loading }) {
     }
   }
 
-  const { catCounts, sorted } = useMemo(() => {
-    const counts = {};
-    for (const t of transactions) {
-      const c = t.category || "other";
-      counts[c] = (counts[c] || 0) + 1;
-    }
-    return {
-      catCounts: counts,
-      sorted: sortTransactions(transactions, sortKey, sortDir, counts),
-    };
+  // ⚡ Bolt: Removed unused catCounts computation that was iterating over all
+  // transactions on every column sort change.
+  const sorted = useMemo(() => {
+    return sortTransactions(transactions, sortKey, sortDir);
   }, [transactions, sortKey, sortDir]);
   const arrow = sortDir === "asc" ? " ↑" : " ↓";
 
