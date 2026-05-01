@@ -65,32 +65,35 @@ function App() {
     loadData();
   }
 
-  const { total, totalIncome } = useMemo(() => {
-    return (transactions || []).reduce(
-      (acc, t) => {
-        if (t) {
-          if (t.category === "income") {
-            acc.totalIncome -= t.amount || 0;
-          } else {
-            acc.total += t.amount || 0;
-          }
-        }
-        return acc;
-      },
-      { total: 0, totalIncome: 0 }
-    );
-  }, [transactions]);
+  // ⚡ Bolt: Loop fusion optimization.
+  // Merged two O(N) loops (calculating totals and top category) into a single pass.
+  // Reduces iteration overhead and avoids .reduce function call overhead.
+  const { total, totalIncome, topCat } = useMemo(() => {
+    let tTotal = 0;
+    let tIncome = 0;
+    const catTotals = {};
 
-  const topCat = useMemo(() => {
-    const totals = {};
-    const txs = transactions || [];
-    for (const t of txs) {
+    for (const t of transactions || []) {
       if (!t) continue;
-      const c = t.category || "other";
-      if (c === "income") continue;
-      totals[c] = (totals[c] || 0) + (t.amount || 0);
+      const amt = t.amount || 0;
+      if (t.category === "income") {
+        tIncome -= amt;
+      } else {
+        tTotal += amt;
+        const c = t.category || "other";
+        catTotals[c] = (catTotals[c] || 0) + amt;
+      }
     }
-    return Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0] || "--";
+
+    let top = "--";
+    let max = -Infinity;
+    for (const [c, val] of Object.entries(catTotals)) {
+      if (val > max) {
+        max = val;
+        top = c;
+      }
+    }
+    return { total: tTotal, totalIncome: tIncome, topCat: top };
   }, [transactions]);
 
   const today = new Date().toLocaleDateString("en-US", {

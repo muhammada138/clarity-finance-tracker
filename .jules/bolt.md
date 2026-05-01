@@ -1,0 +1,3 @@
+## 2024-05-24 - Loop Fusion in React State Derivation
+**Learning:** In React components with multiple derived state values (like `total`, `totalIncome`, `topCat`) based on the same array dependency (`transactions`), using separate `useMemo` hooks with separate loops (especially using `.reduce`) incurs unnecessary iteration overhead. Fusing them into a single loop reduces the time complexity constant and avoids function call overhead.
+**Action:** Always look for opportunities to fuse loops when calculating multiple aggregates over the same list in a single render cycle, keeping them within a single `useMemo` block.
