@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PLAID_CLIENT_ID = os.getenv("PLAID_CLIENT_ID")
-PLAID_SECRET = os.getenv("PLAID_SECRET")
+PLAID_CLIENT_ID = os.environ["PLAID_CLIENT_ID"]
+PLAID_SECRET = os.environ["PLAID_SECRET"]
 
 
 _configuration = plaid.Configuration(
