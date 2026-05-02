@@ -13,7 +13,7 @@ def test_health_check_or_root():
 @pytest.mark.asyncio
 async def test_insights_endpoint(mocker):
     # Set fake state
-    state.store["access_token"] = "fake_token"
+    state.store["access_tokens"] = ["fake_token"]
     state.store["transactions"] = None
 
     # Mocking Plaid client and AI services
@@ -43,7 +43,7 @@ async def test_insights_endpoint(mocker):
 @pytest.mark.asyncio
 async def test_chat_endpoint(mocker):
     # Set fake state
-    state.store["access_token"] = "fake_token"
+    state.store["access_tokens"] = ["fake_token"]
     state.store["transactions"] = None
 
     # Mocking Plaid client and AI services
