@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.services import plaid_client as plaid_svc
 from app import state
 
@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 class ExchangeRequest(BaseModel):
-    public_token: str
+    public_token: str = Field(..., max_length=1000)
 
 
 @router.post("/link-token")

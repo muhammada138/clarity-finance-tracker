@@ -43,7 +43,7 @@ function InsightsPanel({ insights, loading }) {
 
       <div className="chat-section">
         <span className="section-label">Ask anything</span>
-        <div className="chat-messages">
+        <div className="chat-messages" aria-live="polite">
           {messages.map((m, i) => (
             <div key={i} className={`message ${m.role}`}>
               {m.text}
@@ -57,6 +57,7 @@ function InsightsPanel({ insights, loading }) {
         <form onSubmit={handleSend} className="chat-form">
           <input
             className="chat-input"
+            aria-label="Ask a question about your finances"
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
