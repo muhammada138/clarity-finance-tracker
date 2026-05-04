@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.services import plaid_client as plaid_svc
 from app.services import ai_insights
 from app import state
@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 class ChatRequest(BaseModel):
-    question: str
+    question: str = Field(..., max_length=1000)
 
 
 async def get_categorized_transactions():
