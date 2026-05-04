@@ -1,0 +1,3 @@
+## 2024-06-25 - React Hook Dependency Optimization
+**Learning:** Multiple separate `useMemo` hooks calculating state derived from the exact same array dependency (like `transactions`) introduce significant O(N) hidden loop iteration overhead during React renders when dealing with large datasets. It is also important to identify places where full O(N log N) sorting is used simply to find the maximum item which could otherwise be calculated with an O(N) single linear scan.
+**Action:** When finding multiple array loops mapped to the same data block, fuse them into a single linear loop to halve or reduce render times without losing the cached result mapping, especially in computationally expensive components processing thousands of elements.
