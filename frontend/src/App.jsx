@@ -23,6 +23,7 @@ function App() {
   });
 
   async function handleDisconnect() {
+    if (!window.confirm("Are you sure you want to log out? This will disconnect your bank account.")) return;
     await disconnect();
     localStorage.removeItem("connected");
     setConnected(false);
@@ -111,9 +112,9 @@ function App() {
       <header>
         <button
           className="logo"
-          onClick={connected ? handleDisconnect : undefined}
-          style={connected ? { cursor: "pointer" } : undefined}
-          aria-label={connected ? "Disconnect bank account" : "Clarity Home"}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{ cursor: "pointer" }}
+          aria-label="Clarity Home"
         >
           <ClarityLogo />
           Clarity
