@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.services import plaid_client as plaid_svc
@@ -20,13 +21,18 @@ async def get_categorized_transactions():
     if state.store["transactions"] is not None:
         return state.store["transactions"]
     
+    # ⚡ Bolt: Batch multiple API calls into single request
+    # Replaced sequential token fetching loop with concurrent execution using asyncio.gather
+    # to significantly reduce total network wait time across multiple bank accounts.
+    tasks = [plaid_svc.fetch_transactions(token) for token in state.store["access_tokens"]]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
     all_raw = []
-    for token in state.store["access_tokens"]:
-        try:
-            raw = await plaid_svc.fetch_transactions(token)
-            all_raw.extend(raw)
-        except Exception as e:
-            logger.warning(f"Failed to fetch transactions for a token: {e}")
+    for result in results:
+        if isinstance(result, Exception):
+            logger.warning(f"Failed to fetch transactions for a token: {result}")
+        else:
+            all_raw.extend(result)
             
     if not all_raw:
         return []

@@ -1,0 +1,3 @@
+## 2024-05-05 - Concurrent API Fetching with pytest-mock
+**Learning:** When changing sequential async loops to concurrent execution using `asyncio.gather(*tasks)`, `pytest-mock`'s `AsyncMock` can fail if it was previously mocked using `return_value = [...]`. Passing a mock configured with a single static `return_value` into `asyncio.gather` multiple times causes coroutine issues in the test runner.
+**Action:** Always refactor the mock to use `side_effect = lambda _: [...]` so that each concurrent call invoked by `asyncio.gather` generates a fresh return value, preventing test runner coroutine errors.
